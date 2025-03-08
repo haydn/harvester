@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import "./layout.css";
 
 type Props = Readonly<{
   children: React.ReactNode;
