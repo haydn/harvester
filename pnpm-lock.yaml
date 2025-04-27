@@ -23,9 +23,6 @@ dependencies:
   swr:
     specifier: ^2.3.3
     version: 2.3.3(react@19.0.0)
-  use-local-storage:
-    specifier: ^3.0.0
-    version: 3.0.0(react@19.0.0)
   uuid:
     specifier: ^11.1.0
     version: 11.1.0
@@ -3003,14 +3000,6 @@ packages:
     dependencies:
       punycode: 2.3.1
     dev: true
-
-  /use-local-storage@3.0.0(react@19.0.0):
-    resolution: {integrity: sha512-wlPNnBCG3ULIJMr5A+dvWqLiPWCfsN1Kwijq+sAhT5yV4ex0u6XmZuNwP+RerIOfzBuz1pwSZuzhZMiluGQHfQ==}
-    peerDependencies:
-      react: '>=16.8.1'
-    dependencies:
-      react: 19.0.0
-    dev: false
 
   /use-sync-external-store@1.4.0(react@19.0.0):
     resolution: {integrity: sha512-9WXSPC5fMv61vaupRkCKCxsPxBocVnwakBEkMIHHpkTTg6icbJtg6jzgtLDm4bl3cSHAca52rYWih0k4K3PfHw==}

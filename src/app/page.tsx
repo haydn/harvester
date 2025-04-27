@@ -1,61 +1,117 @@
 "use client";
 
-import { useRef } from "react";
+import useSWR from "swr/immutable";
+import { v4 as uuid } from "uuid";
+import type { ListConfig } from ".";
+import ListForm from "./ListForm";
+import Dialog from "./Dialog";
 import List from "./List";
-import useLocalStorage from "use-local-storage";
-import AddList from "./AddList";
+
+const fetcher = (key: string) => {
+  const value = localStorage.getItem(key);
+  return value === null ? null : JSON.parse(value);
+};
 
 const HomePage = () => {
-  const [lists, setLists] = useLocalStorage<
-    Array<{
-      id: string;
-      name: string;
-      url: string;
-      itemSelector: string;
-      itemFilter?: string;
-      titleSelector?: string;
-      linkSelector?: string;
-    }>
-  >("lists", []);
+  const {
+    data: lists,
+    error,
+    isLoading,
+    isValidating,
+    mutate,
+  } = useSWR<Array<ListConfig>>("lists", fetcher);
 
-  const dialogRef = useRef<HTMLDialogElement>(null);
+  const addList = (list: ListConfig) =>
+    mutate(
+      async (current) => {
+        const value = current ? [...current, list] : [list];
+        localStorage.setItem("lists", JSON.stringify(value));
+        return value;
+      },
+      { revalidate: false },
+    );
+
+  const updateList = (list: ListConfig) =>
+    mutate(
+      async (current) => {
+        const value = current ? [...current.filter((x) => x.id !== list.id), list] : [list];
+        localStorage.setItem("lists", JSON.stringify(value));
+        return value;
+      },
+      { revalidate: false },
+    );
+
+  const deleteList = (list: ListConfig) =>
+    mutate(
+      async (current) => {
+        const value = current ? [...current.filter((x) => x.id !== list.id)] : [];
+        localStorage.setItem("lists", JSON.stringify(value));
+        return value;
+      },
+      { revalidate: false },
+    );
+
+  if (isLoading) return "One sec…";
+  if (isValidating) return "One sec…";
+  if (error) return ":(";
 
   return (
     <div>
-      {lists.map(({ id, ...list }) => (
-        <div key={id}>
+      {(lists ?? []).map((list) => (
+        <div key={list.id}>
           <List {...list} />
-          <button
-            onClick={() => {
-              setLists(lists.filter((list) => list.id !== id));
-            }}
+          <Dialog
+            render={(closeDialog) => (
+              <button
+                onClick={() => {
+                  deleteList(list);
+                  closeDialog();
+                }}
+              >
+                Confirm
+              </button>
+            )}
           >
             Remove list
-          </button>
+          </Dialog>
+
+          <Dialog
+            render={(closeDialog) => (
+              <ListForm
+                list={list}
+                onSubmit={(list) => {
+                  updateList(list);
+                  closeDialog();
+                }}
+              />
+            )}
+          >
+            Edit list
+          </Dialog>
         </div>
       ))}
-      <dialog ref={dialogRef}>
-        <button
-          onClick={() => {
-            if (dialogRef.current) dialogRef.current.close();
-          }}
-        >
-          Close
-        </button>
-        <AddList
-          onSubmit={(list) => {
-            setLists([...lists, list]);
-            if (dialogRef.current) dialogRef.current.close();
-          }}
-        />
-      </dialog>
-      <button
-        onClick={() => {
-          if (dialogRef.current) dialogRef.current.showModal();
-        }}
+      <hr />
+      <Dialog
+        render={(closeDialog) => (
+          <ListForm
+            list={{
+              id: uuid(),
+              name: "",
+              itemSelector: "",
+              url: "",
+              itemFilter: "",
+              linkSelector: "",
+              titleSelector: "",
+            }}
+            onSubmit={(list) => {
+              addList(list);
+              closeDialog();
+            }}
+          />
+        )}
       >
         Add list
-      </button>
+      </Dialog>
     </div>
   );
 };

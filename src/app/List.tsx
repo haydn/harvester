@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import useSWR from "swr";
+import useSWR from "swr/immutable";
 import type { ListConfig, ListResult } from ".";
 
 type Props = Omit<ListConfig, "id">;

@@ -1,38 +1,19 @@
 import { useState } from "react";
-import { v4 as uuid } from "uuid";
 import type { ListConfig } from ".";
 import List from "./List";
 
 type Props = {
+  list: ListConfig;
   onSubmit: (list: ListConfig) => void;
 };
 
-const AddList = ({ onSubmit }: Props) => {
-  const [name, setName] = useState("");
-  const [url, setUrl] = useState("");
-  const [itemSelector, setItemSelector] = useState("");
-  const [titleSelector, setTitleSelector] = useState("");
-  const [itemFilter, setItemFilter] = useState("");
-  const [linkSelector, setLinkSelector] = useState("");
+const ListForm = ({ list: initialList, onSubmit }: Props) => {
+  const [list, setList] = useState(initialList);
   return (
     <form
       onSubmit={(event) => {
         event.preventDefault();
-        onSubmit({
-          id: uuid(),
-          name,
-          url,
-          itemSelector,
-          titleSelector,
-          itemFilter,
-          linkSelector,
-        });
-        setName("");
-        setUrl("");
-        setItemSelector("");
-        setTitleSelector("");
-        setItemFilter("");
-        setLinkSelector("");
+        onSubmit(list);
       }}
     >
       <div>
@@ -41,11 +22,12 @@ const AddList = ({ onSubmit }: Props) => {
           id="name"
           type="text"
           required
-          value={name}
+          value={list.name}
           onChange={(event) => {
-            setName(event.target.value);
+            setList({ ...list, name: event.target.value });
           }}
           size={100}
+          placeholder="Example"
         />
       </div>
       <div>
@@ -54,11 +36,12 @@ const AddList = ({ onSubmit }: Props) => {
           id="url"
           type="url"
           required
-          value={url}
+          value={list.url}
           onChange={(event) => {
-            setUrl(event.target.value);
+            setList({ ...list, url: event.target.value });
           }}
           size={100}
+          placeholder="https://supabase.com/careers"
         />
       </div>
       <div>
@@ -67,11 +50,12 @@ const AddList = ({ onSubmit }: Props) => {
           id="itemSelector"
           type="text"
           required
-          value={itemSelector}
+          value={list.itemSelector}
           onChange={(event) => {
-            setItemSelector(event.target.value);
+            setList({ ...list, itemSelector: event.target.value });
           }}
           size={100}
+          placeholder="a[href^=https\:\/\/jobs\.ashbyhq\.com]"
         />
       </div>
       <div>
@@ -80,11 +64,12 @@ const AddList = ({ onSubmit }: Props) => {
           id="titleSelector"
           type="text"
           required
-          value={titleSelector}
+          value={list.titleSelector}
           onChange={(event) => {
-            setTitleSelector(event.target.value);
+            setList({ ...list, titleSelector: event.target.value });
           }}
           size={100}
+          placeholder="h4"
         />
       </div>
       <div>
@@ -92,9 +77,9 @@ const AddList = ({ onSubmit }: Props) => {
         <input
           id="itemFilter"
           type="text"
-          value={itemFilter}
+          value={list.itemFilter}
           onChange={(event) => {
-            setItemFilter(event.target.value);
+            setList({ ...list, itemFilter: event.target.value });
           }}
           size={100}
         />
@@ -104,33 +89,33 @@ const AddList = ({ onSubmit }: Props) => {
         <input
           id="linkSelector"
           type="text"
-          value={linkSelector}
+          value={list.linkSelector}
           onChange={(event) => {
-            setLinkSelector(event.target.value);
+            setList({ ...list, linkSelector: event.target.value });
           }}
           size={100}
         />
       </div>
-      {name.trim() === "" ||
-      url.trim() === "" ||
-      itemSelector.trim() === "" ||
-      titleSelector.trim() === "" ? (
+      {list.name.trim() === "" ||
+      list.url.trim() === "" ||
+      list.itemSelector.trim() === "" ||
+      (list.titleSelector ?? "").trim() === "" ? (
         <p>Required fields: Name, URL, Item selector and Title selector</p>
       ) : (
         <List
-          name={name}
-          itemSelector={itemSelector}
-          url={url}
-          itemFilter={itemFilter}
-          linkSelector={linkSelector}
-          titleSelector={titleSelector}
+          name={list.name}
+          itemSelector={list.itemSelector}
+          url={list.url}
+          itemFilter={list.itemFilter}
+          linkSelector={list.linkSelector}
+          titleSelector={list.titleSelector}
         />
       )}
       <div>
-        <button type="submit">Add</button>
+        <button type="submit">Save</button>
       </div>
     </form>
   );
 };
 
-export default AddList;
+export default ListForm;
