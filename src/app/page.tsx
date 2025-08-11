@@ -57,40 +57,42 @@ const HomePage = () => {
 
   return (
     <div>
-      {(lists ?? []).map((list) => (
-        <div key={list.id}>
-          <List {...list} />
-          <Dialog
-            render={(closeDialog) => (
-              <button
-                onClick={() => {
-                  deleteList(list);
-                  closeDialog();
-                }}
-                type="button"
-              >
-                Confirm
-              </button>
-            )}
-          >
-            Remove list
-          </Dialog>
+      <div style={{ columns: 4 }}>
+        {(lists ?? []).map((list) => (
+          <div key={list.id} style={{ breakInside: "avoid" }}>
+            <List {...list} />
+            <Dialog
+              render={(closeDialog) => (
+                <button
+                  onClick={() => {
+                    deleteList(list);
+                    closeDialog();
+                  }}
+                  type="button"
+                >
+                  Confirm
+                </button>
+              )}
+            >
+              Remove list
+            </Dialog>
 
-          <Dialog
-            render={(closeDialog) => (
-              <ListForm
-                list={list}
-                onSubmit={(list) => {
-                  updateList(list);
-                  closeDialog();
-                }}
-              />
-            )}
-          >
-            Edit list
-          </Dialog>
-        </div>
-      ))}
+            <Dialog
+              render={(closeDialog) => (
+                <ListForm
+                  list={list}
+                  onSubmit={(list) => {
+                    updateList(list);
+                    closeDialog();
+                  }}
+                />
+              )}
+            >
+              Edit list
+            </Dialog>
+          </div>
+        ))}
+      </div>
       <hr />
       <Dialog
         render={(closeDialog) => (
