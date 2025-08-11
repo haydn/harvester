@@ -96,6 +96,7 @@ const HomePage = () => {
         render={(closeDialog) => (
           <ListForm
             list={{
+              exclude: "",
               id: uuid(),
               include: "",
               itemSelector: "",

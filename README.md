@@ -46,6 +46,7 @@ Required:
 
 Optional:
 
+- `exclude` — A string an item's text content must contain to be excluded in the result.
 - `include` — A string an item's text content must contain to be included in the result.
 - `linkSelector` — A CSS selector used to identify an `<a>` element within each item that has a href
   attribute to be used as a link. If the item itself is an `<a>` element, this param can be omitted.

@@ -5,6 +5,7 @@ export const GET = async (request: Request) => {
   const requestUrl = URL.parse(request.url);
 
   const include = requestUrl?.searchParams.get("include");
+  const exclude = requestUrl?.searchParams.get("exclude");
   const itemSelector = requestUrl?.searchParams.get("itemSelector");
   const titleSelector = requestUrl?.searchParams.get("titleSelector");
   const linkSelector = requestUrl?.searchParams.get("linkSelector");
@@ -38,6 +39,15 @@ export const GET = async (request: Request) => {
       include.trim() !== "" &&
       (item.textContent === null ||
         item.textContent.toLocaleLowerCase().includes(include.toLocaleLowerCase()) === false)
+    ) {
+      continue;
+    }
+
+    if (
+      exclude &&
+      exclude.trim() !== "" &&
+      (item.textContent === null ||
+        item.textContent.toLocaleLowerCase().includes(exclude.toLocaleLowerCase()) === true)
     ) {
       continue;
     }

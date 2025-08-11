@@ -85,6 +85,19 @@ const ListForm = ({ list: initialList, onSubmit }: Props) => {
         />
       </div>
       <div>
+        <label htmlFor="exclude">Exclude</label>
+        <input
+          id="exclude"
+          type="text"
+          value={list.exclude}
+          onChange={(event) => {
+            setList({ ...list, exclude: event.target.value });
+          }}
+          size={100}
+          placeholder="example"
+        />
+      </div>
+      <div>
         <label htmlFor="linkSelector">Link selector</label>
         <input
           id="linkSelector"
@@ -101,6 +114,7 @@ const ListForm = ({ list: initialList, onSubmit }: Props) => {
         <p>Required fields: Name, URL and Item selector</p>
       ) : (
         <List
+          exclude={list.exclude}
           include={list.include}
           itemSelector={list.itemSelector}
           linkSelector={list.linkSelector}

@@ -1,4 +1,5 @@
 export type ListConfig = {
+  exclude?: string;
   id: string;
   include?: string;
   itemSelector: string;
