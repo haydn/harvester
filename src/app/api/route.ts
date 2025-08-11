@@ -37,7 +37,7 @@ export const GET = async (request: Request) => {
       itemFilter &&
       itemFilter.trim() !== "" &&
       (item.textContent === null ||
-        item.textContent.toLocaleLowerCase().includes(itemFilter) === false)
+        item.textContent.toLocaleLowerCase().includes(itemFilter.toLocaleLowerCase()) === false)
     ) {
       continue;
     }
