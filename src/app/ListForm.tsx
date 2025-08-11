@@ -27,7 +27,7 @@ const ListForm = ({ list: initialList, onSubmit }: Props) => {
             setList({ ...list, name: event.target.value });
           }}
           size={100}
-          placeholder="Example"
+          placeholder="Reddit"
         />
       </div>
       <div>
@@ -41,7 +41,7 @@ const ListForm = ({ list: initialList, onSubmit }: Props) => {
             setList({ ...list, url: event.target.value });
           }}
           size={100}
-          placeholder="https://supabase.com/careers"
+          placeholder="https://www.reddit.com/"
         />
       </div>
       <div>
@@ -55,7 +55,7 @@ const ListForm = ({ list: initialList, onSubmit }: Props) => {
             setList({ ...list, itemSelector: event.target.value });
           }}
           size={100}
-          placeholder="a[href^=https\:\/\/jobs\.ashbyhq\.com]"
+          placeholder="article"
         />
       </div>
       <div>
@@ -63,13 +63,12 @@ const ListForm = ({ list: initialList, onSubmit }: Props) => {
         <input
           id="titleSelector"
           type="text"
-          required
           value={list.titleSelector}
           onChange={(event) => {
             setList({ ...list, titleSelector: event.target.value });
           }}
           size={100}
-          placeholder="h4"
+          placeholder="a"
         />
       </div>
       <div>
@@ -82,6 +81,7 @@ const ListForm = ({ list: initialList, onSubmit }: Props) => {
             setList({ ...list, itemFilter: event.target.value });
           }}
           size={100}
+          placeholder="example"
         />
       </div>
       <div>
@@ -94,13 +94,11 @@ const ListForm = ({ list: initialList, onSubmit }: Props) => {
             setList({ ...list, linkSelector: event.target.value });
           }}
           size={100}
+          placeholder="a"
         />
       </div>
-      {list.name.trim() === "" ||
-      list.url.trim() === "" ||
-      list.itemSelector.trim() === "" ||
-      (list.titleSelector ?? "").trim() === "" ? (
-        <p>Required fields: Name, URL, Item selector and Title selector</p>
+      {list.name.trim() === "" || list.url.trim() === "" || list.itemSelector.trim() === "" ? (
+        <p>Required fields: Name, URL and Item selector</p>
       ) : (
         <List
           name={list.name}

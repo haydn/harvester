@@ -12,6 +12,8 @@ const List = ({ name, url, itemSelector, itemFilter, titleSelector, linkSelector
   const [requestUrl, setRequestUrl] = useState<string | null>(null);
 
   useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+
     if (window) {
       const result = new URL("/api", window.location.href);
 
@@ -21,8 +23,14 @@ const List = ({ name, url, itemSelector, itemFilter, titleSelector, linkSelector
       result.searchParams.set("url", url);
       if (linkSelector) result.searchParams.set("linkSelector", linkSelector);
 
-      setRequestUrl(result.href);
+      timeoutId = setTimeout(() => {
+        setRequestUrl(result.href);
+      }, 500);
     }
+
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+    };
   }, [itemFilter, itemSelector, titleSelector, url, linkSelector]);
 
   const { data, error, isLoading, isValidating } = useSWR<ListResult>(requestUrl, fetcher);
@@ -45,11 +53,10 @@ const List = ({ name, url, itemSelector, itemFilter, titleSelector, linkSelector
         </div>
       ) : (
         <ul>
-          {data.items.map(({ title, url }) => (
-            <li key={url}>
-              <a href={url}>{title}</a>
-            </li>
-          ))}
+          {data.items.map(({ title, url }, index) => {
+            const key = `${title}:${url}:${index}`;
+            return <li key={key}>{url ? <a href={url}>{title}</a> : title}</li>;
+          })}
         </ul>
       )}
     </>
