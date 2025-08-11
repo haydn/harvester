@@ -3,9 +3,9 @@
 import useSWR from "swr/immutable";
 import { v4 as uuid } from "uuid";
 import type { ListConfig } from ".";
-import ListForm from "./ListForm";
 import Dialog from "./Dialog";
 import List from "./List";
+import ListForm from "./ListForm";
 
 const fetcher = (key: string) => {
   const value = localStorage.getItem(key);
@@ -67,6 +67,7 @@ const HomePage = () => {
                   deleteList(list);
                   closeDialog();
                 }}
+                type="button"
               >
                 Confirm
               </button>

@@ -1,4 +1,4 @@
-import { useRef, useState, type ReactNode } from "react";
+import { type ReactNode, useRef, useState } from "react";
 
 type Props = {
   children: ReactNode;
@@ -21,6 +21,7 @@ const Dialog = ({ children, render }: Props) => {
             );
           }
         }}
+        type="button"
       >
         {children}
       </button>
@@ -35,6 +36,7 @@ const Dialog = ({ children, render }: Props) => {
           onClick={() => {
             if (dialogRef.current) dialogRef.current.close();
           }}
+          type="button"
         >
           Close
         </button>
