@@ -72,6 +72,19 @@ const ListForm = ({ list: initialList, onSubmit }: Props) => {
         />
       </div>
       <div>
+        <label htmlFor="linkSelector">Link selector</label>
+        <input
+          id="linkSelector"
+          type="text"
+          value={list.linkSelector}
+          onChange={(event) => {
+            setList({ ...list, linkSelector: event.target.value });
+          }}
+          size={100}
+          placeholder="a"
+        />
+      </div>
+      <div>
         <label htmlFor="include">Include</label>
         <input
           id="include"
@@ -81,7 +94,7 @@ const ListForm = ({ list: initialList, onSubmit }: Props) => {
             setList({ ...list, include: event.target.value });
           }}
           size={100}
-          placeholder="example"
+          placeholder="example, example two"
         />
       </div>
       <div>
@@ -94,20 +107,7 @@ const ListForm = ({ list: initialList, onSubmit }: Props) => {
             setList({ ...list, exclude: event.target.value });
           }}
           size={100}
-          placeholder="example"
-        />
-      </div>
-      <div>
-        <label htmlFor="linkSelector">Link selector</label>
-        <input
-          id="linkSelector"
-          type="text"
-          value={list.linkSelector}
-          onChange={(event) => {
-            setList({ ...list, linkSelector: event.target.value });
-          }}
-          size={100}
-          placeholder="a"
+          placeholder="example, example two"
         />
       </div>
       {list.name.trim() === "" || list.url.trim() === "" || list.itemSelector.trim() === "" ? (

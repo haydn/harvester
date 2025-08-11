@@ -34,22 +34,18 @@ export const GET = async (request: Request) => {
   };
 
   for (const item of items ?? []) {
-    if (
-      include &&
-      include.trim() !== "" &&
-      (item.textContent === null ||
-        item.textContent.toLocaleLowerCase().includes(include.toLocaleLowerCase()) === false)
-    ) {
-      continue;
+    if (include && include.trim() !== "" && item.textContent !== null) {
+      const words = include.split(",").map((word) => word.trim().toLocaleLowerCase());
+      if (words.every((word) => item.textContent.toLocaleLowerCase().includes(word) === false)) {
+        continue;
+      }
     }
 
-    if (
-      exclude &&
-      exclude.trim() !== "" &&
-      (item.textContent === null ||
-        item.textContent.toLocaleLowerCase().includes(exclude.toLocaleLowerCase()) === true)
-    ) {
-      continue;
+    if (exclude && exclude.trim() !== "" && item.textContent !== null) {
+      const words = exclude.split(",").map((word) => word.trim().toLocaleLowerCase());
+      if (words.some((word) => item.textContent.toLocaleLowerCase().includes(word) === true)) {
+        continue;
+      }
     }
 
     result.debug.itemsAfterFilter += 1;
