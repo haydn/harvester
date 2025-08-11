@@ -8,7 +8,7 @@ type Props = Omit<ListConfig, "id">;
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
-const List = ({ name, url, itemSelector, itemFilter, titleSelector, linkSelector }: Props) => {
+const List = ({ name, url, include, itemSelector, titleSelector, linkSelector }: Props) => {
   const [requestUrl, setRequestUrl] = useState<string | null>(null);
 
   useEffect(() => {
@@ -17,7 +17,7 @@ const List = ({ name, url, itemSelector, itemFilter, titleSelector, linkSelector
     if (window) {
       const result = new URL("/api", window.location.href);
 
-      if (itemFilter) result.searchParams.set("itemFilter", itemFilter);
+      if (include) result.searchParams.set("include", include);
       result.searchParams.set("itemSelector", itemSelector);
       if (titleSelector) result.searchParams.set("titleSelector", titleSelector);
       result.searchParams.set("url", url);
@@ -31,7 +31,7 @@ const List = ({ name, url, itemSelector, itemFilter, titleSelector, linkSelector
     return () => {
       if (timeoutId) clearTimeout(timeoutId);
     };
-  }, [itemFilter, itemSelector, titleSelector, url, linkSelector]);
+  }, [include, itemSelector, titleSelector, url, linkSelector]);
 
   const { data, error, isLoading, isValidating } = useSWR<ListResult>(requestUrl, fetcher);
 

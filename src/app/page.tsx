@@ -97,12 +97,12 @@ const HomePage = () => {
           <ListForm
             list={{
               id: uuid(),
-              name: "",
+              include: "",
               itemSelector: "",
-              url: "",
-              itemFilter: "",
               linkSelector: "",
+              name: "",
               titleSelector: "",
+              url: "",
             }}
             onSubmit={(list) => {
               addList(list);

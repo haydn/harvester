@@ -1,6 +1,6 @@
 export type ListConfig = {
   id: string;
-  itemFilter?: string;
+  include?: string;
   itemSelector: string;
   linkSelector?: string;
   name: string;

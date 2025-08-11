@@ -72,13 +72,13 @@ const ListForm = ({ list: initialList, onSubmit }: Props) => {
         />
       </div>
       <div>
-        <label htmlFor="itemFilter">Item filter</label>
+        <label htmlFor="include">Include</label>
         <input
-          id="itemFilter"
+          id="include"
           type="text"
-          value={list.itemFilter}
+          value={list.include}
           onChange={(event) => {
-            setList({ ...list, itemFilter: event.target.value });
+            setList({ ...list, include: event.target.value });
           }}
           size={100}
           placeholder="example"
@@ -101,12 +101,12 @@ const ListForm = ({ list: initialList, onSubmit }: Props) => {
         <p>Required fields: Name, URL and Item selector</p>
       ) : (
         <List
-          name={list.name}
+          include={list.include}
           itemSelector={list.itemSelector}
-          url={list.url}
-          itemFilter={list.itemFilter}
           linkSelector={list.linkSelector}
+          name={list.name}
           titleSelector={list.titleSelector}
+          url={list.url}
         />
       )}
       <div>

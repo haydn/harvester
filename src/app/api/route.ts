@@ -4,7 +4,7 @@ import type { ListResult } from "..";
 export const GET = async (request: Request) => {
   const requestUrl = URL.parse(request.url);
 
-  const itemFilter = requestUrl?.searchParams.get("itemFilter");
+  const include = requestUrl?.searchParams.get("include");
   const itemSelector = requestUrl?.searchParams.get("itemSelector");
   const titleSelector = requestUrl?.searchParams.get("titleSelector");
   const linkSelector = requestUrl?.searchParams.get("linkSelector");
@@ -34,10 +34,10 @@ export const GET = async (request: Request) => {
 
   for (const item of items ?? []) {
     if (
-      itemFilter &&
-      itemFilter.trim() !== "" &&
+      include &&
+      include.trim() !== "" &&
       (item.textContent === null ||
-        item.textContent.toLocaleLowerCase().includes(itemFilter.toLocaleLowerCase()) === false)
+        item.textContent.toLocaleLowerCase().includes(include.toLocaleLowerCase()) === false)
     ) {
       continue;
     }
