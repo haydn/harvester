@@ -1,14 +1,20 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Header } from "@colonydb/anthill/Header";
+import { Heading } from "@colonydb/anthill/Heading";
+import { Link } from "@colonydb/anthill/Link";
+import { RichText } from "@colonydb/anthill/RichText";
+import { Section } from "@colonydb/anthill/Section";
+import { type ReactNode, useEffect, useState } from "react";
 import useSWR from "swr/immutable";
 import type { ListConfig, ListResult } from ".";
 
-type Props = Omit<ListConfig, "id">;
+type Props = { actions?: ReactNode } & Omit<ListConfig, "id">;
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
 const List = ({
+  actions,
   exclude,
   include,
   itemSelector,
@@ -45,10 +51,17 @@ const List = ({
   const { data, error, isLoading, isValidating } = useSWR<ListResult>(requestUrl, fetcher);
 
   return (
-    <>
-      <h4>
-        <a href={url}>{name}</a>
-      </h4>
+    <Section
+      headingLevel={2}
+      spacing="00"
+      title={
+        <Header actions={actions}>
+          <Heading>
+            <Link href={url}>{name}</Link>
+          </Heading>
+        </Header>
+      }
+    >
       {isValidating ? (
         <p>Validating…</p>
       ) : isLoading ? (
@@ -61,14 +74,16 @@ const List = ({
           <pre>{JSON.stringify(data?.debug, null, 2)}</pre>
         </div>
       ) : (
-        <ul>
-          {data.items.map(({ title, url }, index) => {
-            const key = `${title}:${url}:${index}`;
-            return <li key={key}>{url ? <a href={url}>{title}</a> : title}</li>;
-          })}
-        </ul>
+        <RichText>
+          <ul>
+            {data.items.map(({ title, url }, index) => {
+              const key = `${title}:${url}:${index}`;
+              return <li key={key}>{url ? <a href={url}>{title}</a> : title}</li>;
+            })}
+          </ul>
+        </RichText>
       )}
-    </>
+    </Section>
   );
 };
 

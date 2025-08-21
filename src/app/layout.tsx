@@ -1,5 +1,6 @@
+import { Base } from "@colonydb/anthill/Base";
 import type { Metadata } from "next";
-import "./layout.css";
+import FrameworkContextProvider from "./FrameworkContextProvider";
 
 type Props = Readonly<{
   children: React.ReactNode;
@@ -13,7 +14,13 @@ export const metadata: Metadata = {
 
 const RootLayout = ({ children }: Props) => (
   <html lang="en">
-    <body>{children}</body>
+    <body>
+      <FrameworkContextProvider>
+        <Base>
+          <div style={{ padding: "2rlh" }}>{children}</div>
+        </Base>
+      </FrameworkContextProvider>
+    </body>
   </html>
 );
 
