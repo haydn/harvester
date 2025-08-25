@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@colonydb/anthill':
-        specifier: 0.2.0-13
-        version: 0.2.0-13(@types/react@19.1.9)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(valibot@1.1.0(typescript@5.9.2))
+        specifier: 0.2.0-14
+        version: 0.2.0-14(@types/react@19.1.9)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(valibot@1.1.0(typescript@5.9.2))
       jsdom:
         specifier: ^26.0.0
         version: 26.1.0
@@ -29,6 +29,9 @@ importers:
       uuid:
         specifier: ^11.1.0
         version: 11.1.0
+      valibot:
+        specifier: ^1.1.0
+        version: 1.1.0(typescript@5.9.2)
     devDependencies:
       '@biomejs/biome':
         specifier: 2.1.4
@@ -110,8 +113,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@colonydb/anthill@0.2.0-13':
-    resolution: {integrity: sha512-soPF9RXIKocRXrTrYzYzZEv8aikcu4yvrZvyQjn2lMGYeZrkJBI0dOVGsLqKGq5WndhuS6WyNvt+fSbiYdAr4A==}
+  '@colonydb/anthill@0.2.0-14':
+    resolution: {integrity: sha512-6cOqJWlAiHdtPWIjgOyoXCFFBfPzCdXqpV/eWzIM49dFhH3guEsKVpwpOnvak+wI4mFmWu8lseRRzCSR+e0mTw==}
     peerDependencies:
       react: ^19.0.0
       react-dom: ^19.0.0
@@ -931,7 +934,7 @@ snapshots:
   '@biomejs/cli-win32-x64@2.1.4':
     optional: true
 
-  '@colonydb/anthill@0.2.0-13(@types/react@19.1.9)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(valibot@1.1.0(typescript@5.9.2))':
+  '@colonydb/anthill@0.2.0-14(@types/react@19.1.9)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(valibot@1.1.0(typescript@5.9.2))':
     dependencies:
       '@haydn/universal': 0.0.4
       clsx: 2.1.1

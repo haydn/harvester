@@ -1,6 +1,7 @@
 import { Button } from "@colonydb/anthill/Button";
 import { RegularField } from "@colonydb/anthill/RegularField";
 import { Stack } from "@colonydb/anthill/Stack";
+import { StringInput } from "@colonydb/anthill/StringInput";
 import { useState } from "react";
 import type { ListConfig } from ".";
 import List from "./List";
@@ -21,97 +22,73 @@ const ListForm = ({ list: initialList, onSubmit }: Props) => {
     >
       <Stack>
         <RegularField label="Name" name="name" required>
-          <input
-            id="name"
-            type="text"
-            required
-            value={list.name}
-            onChange={(event) => {
-              setList({ ...list, name: event.target.value });
-            }}
-            size={100}
+          <StringInput
+            name="name"
             placeholder="Reddit"
-            style={{ all: "revert" }}
+            setValue={(name) => {
+              setList({ ...list, name });
+            }}
+            value={list.name}
           />
         </RegularField>
         <RegularField label="URL" name="url" required>
-          <input
-            id="url"
-            type="url"
-            required
-            value={list.url}
-            onChange={(event) => {
-              setList({ ...list, url: event.target.value });
-            }}
-            size={100}
+          <StringInput
+            name="url"
             placeholder="https://www.reddit.com/"
-            style={{ all: "revert" }}
+            setValue={(url) => {
+              setList({ ...list, url });
+            }}
+            value={list.url}
           />
         </RegularField>
         <RegularField label="Item Selector" name="itemSelector" required>
-          <input
-            id="itemSelector"
-            type="text"
-            required
-            value={list.itemSelector}
-            onChange={(event) => {
-              setList({ ...list, itemSelector: event.target.value });
-            }}
-            size={100}
+          <StringInput
+            name="itemSelector"
             placeholder="article"
-            style={{ all: "revert" }}
+            setValue={(itemSelector) => {
+              setList({ ...list, itemSelector });
+            }}
+            value={list.itemSelector}
           />
         </RegularField>
         <RegularField label="Title Selector" name="titleSelector">
-          <input
-            id="titleSelector"
-            type="text"
-            value={list.titleSelector}
-            onChange={(event) => {
-              setList({ ...list, titleSelector: event.target.value });
-            }}
-            size={100}
+          <StringInput
+            name="titleSelector"
             placeholder="a"
-            style={{ all: "revert" }}
+            setValue={(titleSelector) => {
+              setList({ ...list, titleSelector });
+            }}
+            value={list.titleSelector}
           />
         </RegularField>
         <RegularField label="Link Selector" name="linkSelector">
-          <input
-            id="linkSelector"
-            type="text"
-            value={list.linkSelector}
-            onChange={(event) => {
-              setList({ ...list, linkSelector: event.target.value });
-            }}
-            size={100}
+          <StringInput
+            name="linkSelector"
             placeholder="a"
-            style={{ all: "revert" }}
+            setValue={(linkSelector) => {
+              setList({ ...list, linkSelector });
+            }}
+            value={list.linkSelector}
           />
         </RegularField>
         <RegularField label="Include" name="include">
-          <input
-            id="include"
-            type="text"
-            value={list.include}
-            onChange={(event) => {
-              setList({ ...list, include: event.target.value });
-            }}
-            size={100}
+          <StringInput
+            name="include"
             placeholder="example, example two"
-            style={{ all: "revert" }}
+            setValue={(include) => {
+              setList({ ...list, include });
+            }}
+            value={list.include}
           />
         </RegularField>
         <RegularField label="Exclude" name="exclude">
-          <input
-            id="exclude"
-            type="text"
-            value={list.exclude}
-            onChange={(event) => {
-              setList({ ...list, exclude: event.target.value });
-            }}
-            size={100}
+          <StringInput
+            name="exclude"
             placeholder="example, example two"
-            style={{ all: "revert" }}
+            setValue={(exclude) => {
+              setList({ ...list, exclude });
+            }}
+            value={list.exclude}
           />
         </RegularField>
         {list.name.trim() === "" ||
