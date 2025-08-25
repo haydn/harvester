@@ -1,115 +1,86 @@
 import { Button } from "@colonydb/anthill/Button";
+import { Form } from "@colonydb/anthill/Form";
 import { RegularField } from "@colonydb/anthill/RegularField";
 import { Stack } from "@colonydb/anthill/Stack";
 import { StringInput } from "@colonydb/anthill/StringInput";
-import { useState } from "react";
+import { useForm } from "@colonydb/anthill/useForm";
+import * as v from "valibot";
 import type { ListConfig } from ".";
 import List from "./List";
 
 type Props = {
+  id: string;
   list: ListConfig;
   onSubmit: (list: ListConfig) => void;
 };
 
-const ListForm = ({ list: initialList, onSubmit }: Props) => {
-  const [list, setList] = useState(initialList);
-  return (
-    <form
-      onSubmit={(event) => {
-        event.preventDefault();
-        onSubmit(list);
-      }}
-    >
-      <Stack>
-        <RegularField label="Name" name="name" required>
-          <StringInput
-            name="name"
-            placeholder="Reddit"
-            setValue={(name) => {
-              setList({ ...list, name });
-            }}
-            value={list.name}
-          />
-        </RegularField>
-        <RegularField label="URL" name="url" required>
-          <StringInput
-            name="url"
-            placeholder="https://www.reddit.com/"
-            setValue={(url) => {
-              setList({ ...list, url });
-            }}
-            value={list.url}
-          />
-        </RegularField>
-        <RegularField label="Item Selector" name="itemSelector" required>
-          <StringInput
-            name="itemSelector"
-            placeholder="article"
-            setValue={(itemSelector) => {
-              setList({ ...list, itemSelector });
-            }}
-            value={list.itemSelector}
-          />
-        </RegularField>
-        <RegularField label="Title Selector" name="titleSelector">
-          <StringInput
-            name="titleSelector"
-            placeholder="a"
-            setValue={(titleSelector) => {
-              setList({ ...list, titleSelector });
-            }}
-            value={list.titleSelector}
-          />
-        </RegularField>
-        <RegularField label="Link Selector" name="linkSelector">
-          <StringInput
-            name="linkSelector"
-            placeholder="a"
-            setValue={(linkSelector) => {
-              setList({ ...list, linkSelector });
-            }}
-            value={list.linkSelector}
-          />
-        </RegularField>
-        <RegularField label="Include" name="include">
-          <StringInput
-            name="include"
-            placeholder="example, example two"
-            setValue={(include) => {
-              setList({ ...list, include });
-            }}
-            value={list.include}
-          />
-        </RegularField>
-        <RegularField label="Exclude" name="exclude">
-          <StringInput
-            name="exclude"
-            placeholder="example, example two"
-            setValue={(exclude) => {
-              setList({ ...list, exclude });
-            }}
-            value={list.exclude}
-          />
-        </RegularField>
-        {list.name.trim() === "" ||
-        list.url.trim() === "" ||
-        list.itemSelector.trim() === "" ? null : (
-          <List
-            exclude={list.exclude}
-            include={list.include}
-            itemSelector={list.itemSelector}
-            linkSelector={list.linkSelector}
-            name={list.name}
-            titleSelector={list.titleSelector}
-            url={list.url}
-          />
-        )}
-        <div>
-          <Button submit>Save</Button>
-        </div>
-      </Stack>
-    </form>
-  );
+const schema = v.object({
+  exclude: v.optional(v.string()),
+  id: v.string(),
+  include: v.optional(v.string()),
+  itemSelector: v.pipe(v.string(), v.nonEmpty()),
+  linkSelector: v.optional(v.string()),
+  name: v.pipe(v.string(), v.nonEmpty()),
+  titleSelector: v.optional(v.string()),
+  url: v.pipe(v.string(), v.nonEmpty(), v.url()),
+});
+
+const ListForm = ({ id, list: initialList, onSubmit }: Props) => (
+  <Form
+    action={async ({ data }) => {
+      onSubmit(data);
+      return {
+        data,
+        ok: true,
+      };
+    }}
+    id={id}
+    initialData={initialList}
+    schema={schema}
+  >
+    <Stack>
+      <RegularField label="Name" name="name" required>
+        <StringInput name="name" placeholder="Reddit" />
+      </RegularField>
+      <RegularField label="URL" name="url" required>
+        <StringInput name="url" placeholder="https://www.reddit.com/" />
+      </RegularField>
+      <RegularField label="Item Selector" name="itemSelector" required>
+        <StringInput name="itemSelector" placeholder="article" />
+      </RegularField>
+      <RegularField label="Title Selector" name="titleSelector">
+        <StringInput name="titleSelector" placeholder="a" />
+      </RegularField>
+      <RegularField label="Link Selector" name="linkSelector">
+        <StringInput name="linkSelector" placeholder="a" />
+      </RegularField>
+      <RegularField label="Include" name="include">
+        <StringInput name="include" placeholder="example, example two" />
+      </RegularField>
+      <RegularField label="Exclude" name="exclude">
+        <StringInput name="exclude" placeholder="example, example two" />
+      </RegularField>
+      <Preview />
+      <div>
+        <Button submit>Save</Button>
+      </div>
+    </Stack>
+  </Form>
+);
+
+const Preview = () => {
+  const { data } = useForm(schema);
+  return v.is(schema, data) ? (
+    <List
+      exclude={data.exclude}
+      include={data.include}
+      itemSelector={data.itemSelector}
+      linkSelector={data.linkSelector}
+      name={data.name}
+      titleSelector={data.titleSelector}
+      url={data.url}
+    />
+  ) : null;
 };
 
 export default ListForm;

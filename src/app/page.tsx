@@ -14,7 +14,6 @@ import useSWR from "swr/immutable";
 import { v4 as uuid } from "uuid";
 import * as v from "valibot";
 import type { ListConfig } from ".";
-// import Dialog from "./Dialog";
 import List from "./List";
 import ListForm from "./ListForm";
 
@@ -91,6 +90,7 @@ const HomePage = () => {
                 <Card header={<Heading>Add List</Heading>}>
                   <CardContent>
                     <ListForm
+                      id="newList"
                       list={{
                         exclude: "",
                         id: uuid(),
@@ -176,6 +176,7 @@ const HomePage = () => {
                             <Card header={<Heading>Edit List</Heading>}>
                               <CardContent>
                                 <ListForm
+                                  id={`editList:${list.id}`}
                                   list={list}
                                   onSubmit={(list) => {
                                     updateList(list);
