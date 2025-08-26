@@ -6,10 +6,32 @@ type Props = Readonly<{
   children: React.ReactNode;
 }>;
 
+const canonical = "https://harvester.particlesystem.com/";
+const description = "A tool to display lists of content scraped from the web.";
+const image = "https://harvester.particlesystem.com/harvester-640x640.png";
+const title = "Harvester";
+
 export const metadata: Metadata = {
-  title: "Harvester",
-  description:
-    "Use CSS selectors to grab lists of stuff from various websites and list them altogether on a single page.",
+  title,
+  description,
+  alternates: {
+    canonical,
+  },
+  openGraph: {
+    title,
+    description,
+    url: canonical,
+    siteName: title,
+    images: [
+      {
+        url: image,
+        width: 640,
+        height: 640,
+      },
+    ],
+    locale: "en_GB",
+    type: "website",
+  },
 };
 
 const RootLayout = ({ children }: Props) => (
