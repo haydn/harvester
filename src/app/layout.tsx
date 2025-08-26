@@ -1,4 +1,5 @@
 import { Base } from "@colonydb/anthill/Base";
+import { Analytics } from "@vercel/analytics/next";
 import type { Metadata } from "next";
 import FrameworkContextProvider from "./FrameworkContextProvider";
 
@@ -54,6 +55,7 @@ const RootLayout = ({ children }: Props) => (
           {children}
         </Base>
       </FrameworkContextProvider>
+      <Analytics />
     </body>
   </html>
 );
