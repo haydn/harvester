@@ -16,8 +16,20 @@ const RootLayout = ({ children }: Props) => (
   <html lang="en">
     <body>
       <FrameworkContextProvider>
-        <Base>
-          <div style={{ padding: "2rlh" }}>{children}</div>
+        <Base
+          brandTypeface="serif"
+          color={{
+            lightness: 0.779,
+            chroma: 0.169,
+            hue: 65.15,
+            shadesLightnessCoefficient: 0.838,
+            shadesChromaCoefficient: 0.789,
+            tintsLightnessCoefficient: 0.71,
+            tintsChromaCoefficient: 0.745,
+            grayChroma: 0,
+          }}
+        >
+          {children}
         </Base>
       </FrameworkContextProvider>
     </body>
