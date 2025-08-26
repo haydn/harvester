@@ -8,7 +8,7 @@ import { Dialog } from "@colonydb/anthill/Dialog";
 import { Header } from "@colonydb/anthill/Header";
 import { Heading } from "@colonydb/anthill/Heading";
 import { Icon } from "@colonydb/anthill/Icon";
-import { MutliColumnStack } from "@colonydb/anthill/MutliColumnStack";
+import { MultiColumnStack } from "@colonydb/anthill/MultiColumnStack";
 import { Section } from "@colonydb/anthill/Section";
 import Image from "next/image";
 import useSWR from "swr/immutable";
@@ -134,7 +134,7 @@ const HomePage = () => {
       }
     >
       <div style={{ padding: "0 1rlh 1rlh" }}>
-        <MutliColumnStack columns="20rem">
+        <MultiColumnStack columns="30ch">
           {(lists ?? [])
             .sort((a, b) => a.name.localeCompare(b.name))
             .map((list) => (
@@ -218,7 +218,7 @@ const HomePage = () => {
                 {...list}
               />
             ))}
-        </MutliColumnStack>
+        </MultiColumnStack>
       </div>
     </Section>
   );
