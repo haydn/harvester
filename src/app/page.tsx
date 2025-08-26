@@ -10,6 +10,7 @@ import { Heading } from "@colonydb/anthill/Heading";
 import { Icon } from "@colonydb/anthill/Icon";
 import { MutliColumnStack } from "@colonydb/anthill/MutliColumnStack";
 import { Section } from "@colonydb/anthill/Section";
+import Image from "next/image";
 import useSWR from "swr/immutable";
 import { v4 as uuid } from "uuid";
 import * as v from "valibot";
@@ -81,127 +82,144 @@ const HomePage = () => {
   return (
     <Section
       title={
-        <Header
-          actions={
-            <Dialog
-              dismissible
-              icon={<Icon symbol="Add" />}
-              render={(closeDialog) => (
-                <Card header={<Heading>Add List</Heading>}>
-                  <CardContent>
-                    <ListForm
-                      id="newList"
-                      list={{
-                        exclude: "",
-                        id: uuid(),
-                        include: "",
-                        itemSelector: "",
-                        linkSelector: "",
-                        name: "",
-                        titleSelector: "",
-                        url: "",
-                      }}
-                      onSubmit={(list) => {
-                        addList(list);
-                        closeDialog();
-                      }}
-                    />
-                  </CardContent>
-                </Card>
-              )}
-              width="medium"
-            >
-              Add list
-            </Dialog>
-          }
-        >
-          <Heading>Harvester</Heading>
-        </Header>
+        <div style={{ background: "light-dark(var(--color-gray-t3), var(--color-gray-s3))" }}>
+          <Header
+            actions={
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  paddingInlineEnd: "1rlh",
+                  height: "100%",
+                }}
+              >
+                <Dialog
+                  dismissible
+                  icon={<Icon symbol="Add" />}
+                  render={(closeDialog) => (
+                    <Card header={<Heading>Add List</Heading>}>
+                      <CardContent>
+                        <ListForm
+                          id="newList"
+                          list={{
+                            exclude: "",
+                            id: uuid(),
+                            include: "",
+                            itemSelector: "",
+                            linkSelector: "",
+                            name: "",
+                            titleSelector: "",
+                            url: "",
+                          }}
+                          onSubmit={(list) => {
+                            addList(list);
+                            closeDialog();
+                          }}
+                        />
+                      </CardContent>
+                    </Card>
+                  )}
+                  width="medium"
+                >
+                  Add list
+                </Dialog>
+              </div>
+            }
+          >
+            <Heading>
+              <Image src="/harvester-640x640.png" alt="Harvester" height={55} width={55} />
+            </Heading>
+          </Header>
+        </div>
       }
     >
-      <MutliColumnStack columns="20rem">
-        {(lists ?? [])
-          .sort((a, b) => a.name.localeCompare(b.name))
-          .map((list) => (
-            <List
-              actions={
-                <ActionSet
-                  actions={[
-                    {
-                      content: (
-                        <Dialog
-                          dismissible
-                          icon={<Icon symbol="Remove" />}
-                          render={(closeDialog) => (
-                            <Card
-                              header={<Heading>Remove List</Heading>}
-                              footer={
-                                <>
-                                  <Button
-                                    dangerous
-                                    onClick={() => {
-                                      deleteList(list);
+      <div style={{ padding: "0 1rlh 1rlh" }}>
+        <MutliColumnStack columns="20rem">
+          {(lists ?? [])
+            .sort((a, b) => a.name.localeCompare(b.name))
+            .map((list) => (
+              <List
+                actions={
+                  <ActionSet
+                    actions={[
+                      {
+                        content: (
+                          <Dialog
+                            dismissible
+                            icon={<Icon symbol="Remove" />}
+                            render={(closeDialog) => (
+                              <Card
+                                header={<Heading>Remove List</Heading>}
+                                footer={
+                                  <>
+                                    <Button
+                                      dangerous
+                                      onClick={() => {
+                                        deleteList(list);
+                                        closeDialog();
+                                      }}
+                                      submit
+                                    >
+                                      Confirm
+                                    </Button>
+                                    <Button
+                                      onClick={() => {
+                                        closeDialog();
+                                      }}
+                                    >
+                                      Cancel
+                                    </Button>
+                                  </>
+                                }
+                              >
+                                <CardContent>
+                                  Are you sure you want to remove this list?
+                                </CardContent>
+                              </Card>
+                            )}
+                            width="narrow"
+                          >
+                            Remove list
+                          </Dialog>
+                        ),
+                        key: "remove",
+                      },
+                      {
+                        content: (
+                          <Dialog
+                            dismissible
+                            icon={<Icon symbol="Add" />}
+                            render={(closeDialog) => (
+                              <Card header={<Heading>Edit List</Heading>}>
+                                <CardContent>
+                                  <ListForm
+                                    id={`editList:${list.id}`}
+                                    list={list}
+                                    onSubmit={(list) => {
+                                      updateList(list);
                                       closeDialog();
                                     }}
-                                    submit
-                                  >
-                                    Confirm
-                                  </Button>
-                                  <Button
-                                    onClick={() => {
-                                      closeDialog();
-                                    }}
-                                  >
-                                    Cancel
-                                  </Button>
-                                </>
-                              }
-                            >
-                              <CardContent>Are you sure you want to remove this list?</CardContent>
-                            </Card>
-                          )}
-                          width="narrow"
-                        >
-                          Remove list
-                        </Dialog>
-                      ),
-                      key: "remove",
-                    },
-                    {
-                      content: (
-                        <Dialog
-                          dismissible
-                          icon={<Icon symbol="Add" />}
-                          render={(closeDialog) => (
-                            <Card header={<Heading>Edit List</Heading>}>
-                              <CardContent>
-                                <ListForm
-                                  id={`editList:${list.id}`}
-                                  list={list}
-                                  onSubmit={(list) => {
-                                    updateList(list);
-                                    closeDialog();
-                                  }}
-                                />
-                              </CardContent>
-                            </Card>
-                          )}
-                          width="medium"
-                        >
-                          Edit list
-                        </Dialog>
-                      ),
-                      key: "edit",
-                    },
-                  ]}
-                  title="Edit"
-                />
-              }
-              key={list.id}
-              {...list}
-            />
-          ))}
-      </MutliColumnStack>
+                                  />
+                                </CardContent>
+                              </Card>
+                            )}
+                            width="medium"
+                          >
+                            Edit list
+                          </Dialog>
+                        ),
+                        key: "edit",
+                      },
+                    ]}
+                    title="Edit"
+                  />
+                }
+                key={list.id}
+                {...list}
+              />
+            ))}
+        </MutliColumnStack>
+      </div>
     </Section>
   );
 };
