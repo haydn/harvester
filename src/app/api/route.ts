@@ -1,21 +1,7 @@
 import { JSDOM, VirtualConsole } from "jsdom";
-import { after } from "next/server";
-import { createClient } from "redis";
 import type { ListResult } from "..";
 
 export const GET = async (request: Request) => {
-  const redis = process.env.REDIS_URL
-    ? createClient({
-        url: process.env.REDIS_URL,
-      })
-    : null;
-
-  if (redis) await redis.connect();
-
-  after(() => {
-    if (redis) redis.destroy();
-  });
-
   const requestUrl = URL.parse(request.url);
 
   const include = requestUrl?.searchParams.get("include");
@@ -33,30 +19,15 @@ export const GET = async (request: Request) => {
     return new Response(null, { status: 400, statusText: "Missing itemSelector query param" });
   }
 
-  const responseCacheKey = `${url}:${itemSelector}:${titleSelector}:${linkSelector}:${include}:${exclude}`;
+  const response = await fetch(url, {
+    next: {
+      revalidate: 60 * 30,
+    },
+  });
 
-  const cachedResponse = await redis?.HGET("response_cache", responseCacheKey);
+  if (response.ok === false) throw Error("Failed to fetch URL");
 
-  if (cachedResponse) {
-    return new Response(cachedResponse);
-  }
-
-  let html = await redis?.HGET("url_cache", url);
-
-  if (html === null || html === undefined) {
-    const response = await fetch(url);
-
-    if (response.ok === false) throw Error("Failed to fetch URL");
-
-    const text = await response.text();
-
-    if (redis) {
-      await redis.HSET("url_cache", url, text);
-      await redis.HEXPIRE("url_cache", url, 60 * 40);
-    }
-
-    html = text;
-  }
+  const html = await response.text();
 
   const dom = await createDOM(html, url);
 
@@ -115,14 +86,7 @@ export const GET = async (request: Request) => {
     }
   }
 
-  const response = JSON.stringify(result);
-
-  if (redis) {
-    await redis.HSET("response_cache", responseCacheKey, response);
-    await redis.HEXPIRE("response_cache", responseCacheKey, 60 * 50);
-  }
-
-  return new Response(response, {
+  return Response.json(result, {
     headers: {
       "Cache-Control": "max-age=0, s-maxage=3600",
     },
