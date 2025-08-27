@@ -1,7 +1,21 @@
 import { JSDOM, VirtualConsole } from "jsdom";
+import { after } from "next/server";
+import { createClient } from "redis";
 import type { ListResult } from "..";
 
 export const GET = async (request: Request) => {
+  const redis = process.env.REDIS_URL
+    ? createClient({
+        url: process.env.REDIS_URL,
+      })
+    : null;
+
+  if (redis) await redis.connect();
+
+  after(() => {
+    if (redis) redis.destroy();
+  });
+
   const requestUrl = URL.parse(request.url);
 
   const include = requestUrl?.searchParams.get("include");
@@ -19,7 +33,24 @@ export const GET = async (request: Request) => {
     return new Response(null, { status: 400, statusText: "Missing itemSelector query param" });
   }
 
-  const dom = await createDOM(url);
+  let html = await redis?.HGET("url_cache", url);
+
+  if (html === null || html === undefined) {
+    const response = await fetch(url);
+
+    if (response.ok === false) throw Error("Failed to fetch URL");
+
+    const text = await response.text();
+
+    if (redis) {
+      await redis.HSET("url_cache", url, text);
+      await redis.HEXPIRE("url_cache", url, 60 * 60 * 1);
+    }
+
+    html = text;
+  }
+
+  const dom = await createDOM(html, url);
 
   if (!dom) {
     return new Response(null, { status: 500, statusText: "Unable to load URL" });
@@ -97,10 +128,10 @@ const selectAll = (root: Document | Element, selector: string) => {
   }
 };
 
-const createDOM = async (url: string) => {
+const createDOM = async (html: string, url: string) => {
   const virtualConsole = new VirtualConsole();
   try {
-    const dom = await JSDOM.fromURL(url, { virtualConsole });
+    const dom = new JSDOM(html, { url, virtualConsole });
     return dom;
   } catch (error) {
     console.error(error);
