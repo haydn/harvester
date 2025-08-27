@@ -11,7 +11,13 @@ import type { ListConfig, ListResult } from ".";
 
 type Props = { actions?: ReactNode } & Omit<ListConfig, "id">;
 
-const fetcher = (url: string) => fetch(url).then((r) => r.json());
+const fetcher = (url: string) =>
+  fetch(url).then((r) => {
+    if (!r.ok) {
+      throw Error(`Failed to fetch data: ${r.status} ${r.statusText}`);
+    }
+    return r.json();
+  });
 
 const List = ({
   actions,
@@ -48,7 +54,7 @@ const List = ({
     };
   }, [exclude, include, itemSelector, titleSelector, url, linkSelector]);
 
-  const { data, error, isLoading, isValidating } = useSWR<ListResult>(requestUrl, fetcher);
+  const { data, error, isLoading, isValidating } = useSWR<ListResult, Error>(requestUrl, fetcher);
 
   return (
     <Section
@@ -67,7 +73,7 @@ const List = ({
       ) : isLoading ? (
         <p>Loading…</p>
       ) : error ? (
-        <p>Error: {error}</p>
+        <p>Error: {error.message}</p>
       ) : data === undefined || data.items.length === 0 ? (
         <div>
           <p>No results</p>

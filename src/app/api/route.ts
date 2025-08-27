@@ -1,4 +1,4 @@
-import { JSDOM } from "jsdom";
+import { JSDOM, VirtualConsole } from "jsdom";
 import type { ListResult } from "..";
 
 export const GET = async (request: Request) => {
@@ -12,14 +12,18 @@ export const GET = async (request: Request) => {
   const url = requestUrl?.searchParams.get("url");
 
   if (url === null || url === undefined) {
-    return new Response("Missing URL query param", { status: 400 });
+    return new Response(null, { status: 400, statusText: "Missing URL query param" });
   }
 
   if (itemSelector === null || itemSelector === undefined || itemSelector.trim() === "") {
-    return new Response("Missing itemSelector query param", { status: 400 });
+    return new Response(null, { status: 400, statusText: "Missing itemSelector query param" });
   }
 
-  const dom = await JSDOM.fromURL(url);
+  const dom = await createDOM(url);
+
+  if (!dom) {
+    return new Response(null, { status: 500, statusText: "Unable to load URL" });
+  }
 
   const items = selectAll(dom.window.document, itemSelector);
 
@@ -90,5 +94,16 @@ const selectAll = (root: Document | Element, selector: string) => {
   } catch (error) {
     console.error(error);
     return [];
+  }
+};
+
+const createDOM = async (url: string) => {
+  const virtualConsole = new VirtualConsole();
+  try {
+    const dom = await JSDOM.fromURL(url, { virtualConsole });
+    return dom;
+  } catch (error) {
+    console.error(error);
+    return null;
   }
 };
