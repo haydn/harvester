@@ -52,7 +52,7 @@ export const GET = async (request: Request) => {
 
     if (redis) {
       await redis.HSET("url_cache", url, text);
-      await redis.HEXPIRE("url_cache", url, 60 * 30);
+      await redis.HEXPIRE("url_cache", url, 60 * 40);
     }
 
     html = text;
@@ -119,10 +119,14 @@ export const GET = async (request: Request) => {
 
   if (redis) {
     await redis.HSET("response_cache", responseCacheKey, response);
-    await redis.HEXPIRE("response_cache", responseCacheKey, 60 * 60);
+    await redis.HEXPIRE("response_cache", responseCacheKey, 60 * 50);
   }
 
-  return new Response(response);
+  return new Response(response, {
+    headers: {
+      "Cache-Control": "max-age=0, s-maxage=3600",
+    },
+  });
 };
 
 const select = (root: Document | Element, selector: string) => {
