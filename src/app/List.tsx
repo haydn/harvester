@@ -1,15 +1,21 @@
 "use client";
 
+import { CodeBlock } from "@colonydb/anthill/CodeBlock";
 import { Header } from "@colonydb/anthill/Header";
 import { Heading } from "@colonydb/anthill/Heading";
 import { Link } from "@colonydb/anthill/Link";
+import { PlainText } from "@colonydb/anthill/PlainText";
 import { RichText } from "@colonydb/anthill/RichText";
 import { Section } from "@colonydb/anthill/Section";
+import { Stack } from "@colonydb/anthill/Stack";
 import { type ReactNode, useEffect, useState } from "react";
 import useSWR from "swr/immutable";
 import type { ListConfig, ListResult } from ".";
 
-type Props = { actions?: ReactNode } & Omit<ListConfig, "id">;
+type Props = {
+  actions?: ReactNode;
+  debug?: boolean;
+} & Omit<ListConfig, "id">;
 
 const fetcher = (url: string) =>
   fetch(url).then((r) => {
@@ -21,6 +27,7 @@ const fetcher = (url: string) =>
 
 const List = ({
   actions,
+  debug = false,
   exclude,
   include,
   itemSelector,
@@ -75,10 +82,14 @@ const List = ({
       ) : error ? (
         <p>Error: {error.message}</p>
       ) : data === undefined || data.items.length === 0 ? (
-        <div>
-          <p>No results</p>
-          <pre>{JSON.stringify(data?.debug, null, 2)}</pre>
-        </div>
+        <Stack>
+          <PlainText color={["gray-s1", "gray-t1"]} font="regular-italic">
+            No results
+          </PlainText>
+          {debug && data?.debug ? (
+            <CodeBlock language="json">{JSON.stringify(data.debug, null, 2)}</CodeBlock>
+          ) : null}
+        </Stack>
       ) : (
         <RichText>
           <ul>

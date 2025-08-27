@@ -123,6 +123,7 @@ const Preview = () => {
       <Specimen>
         {v.is(schema, data) ? (
           <List
+            debug
             exclude={data.exclude}
             include={data.include}
             itemSelector={data.itemSelector}
