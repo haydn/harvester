@@ -221,7 +221,7 @@ const HomePage = () => {
                         content: (
                           <Dialog
                             dismissible
-                            icon={<Icon symbol="Add" />}
+                            icon={<Icon symbol="Edit" />}
                             padded
                             render={(closeDialog) => (
                               <ListForm
@@ -249,6 +249,7 @@ const HomePage = () => {
                         key: "edit",
                       },
                     ]}
+                    color={["gray-s1", "gray-t1"]}
                     title="Edit"
                   />
                 }

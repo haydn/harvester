@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@colonydb/anthill": "0.2.0-22",
+    "@colonydb/anthill": "0.2.0-25",
     "@vercel/analytics": "^1.5.0",
     "jsdom": "^26.0.0",
     "next": "15.2.1",
