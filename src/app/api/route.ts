@@ -33,6 +33,14 @@ export const GET = async (request: Request) => {
     return new Response(null, { status: 400, statusText: "Missing itemSelector query param" });
   }
 
+  const responseCacheKey = `${url}:${itemSelector}:${titleSelector}:${linkSelector}:${include}:${exclude}`;
+
+  const cachedResponse = await redis?.HGET("response_cache", responseCacheKey);
+
+  if (cachedResponse) {
+    return new Response(cachedResponse);
+  }
+
   let html = await redis?.HGET("url_cache", url);
 
   if (html === null || html === undefined) {
@@ -44,7 +52,7 @@ export const GET = async (request: Request) => {
 
     if (redis) {
       await redis.HSET("url_cache", url, text);
-      await redis.HEXPIRE("url_cache", url, 60 * 60 * 1);
+      await redis.HEXPIRE("url_cache", url, 60 * 30);
     }
 
     html = text;
@@ -107,7 +115,14 @@ export const GET = async (request: Request) => {
     }
   }
 
-  return Response.json(result);
+  const response = JSON.stringify(result);
+
+  if (redis) {
+    await redis.HSET("response_cache", responseCacheKey, response);
+    await redis.HEXPIRE("response_cache", responseCacheKey, 60 * 60);
+  }
+
+  return new Response(response);
 };
 
 const select = (root: Document | Element, selector: string) => {
