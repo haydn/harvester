@@ -1,4 +1,5 @@
 import { JSDOM, VirtualConsole } from "jsdom";
+import { toTemporalInstant } from "temporal-polyfill";
 import type { ListResult } from "..";
 
 export const GET = async (request: Request) => {
@@ -27,6 +28,10 @@ export const GET = async (request: Request) => {
 
   if (response.ok === false) throw Error("Failed to fetch URL");
 
+  const dateHeader = response.headers.get("date");
+
+  const instant = toTemporalInstant.apply(dateHeader ? new Date(dateHeader) : new Date(Date.now()));
+
   const html = await response.text();
 
   const dom = await createDOM(html, url);
@@ -38,13 +43,14 @@ export const GET = async (request: Request) => {
   const items = selectAll(dom.window.document, itemSelector);
 
   const result: ListResult = {
-    items: [],
     debug: {
       firstLink: undefined,
       firstTitle: undefined,
       itemsAfterFilter: 0,
       itemsFound: items.length,
     },
+    fetchedAt: instant.toString(),
+    items: [],
   };
 
   for (const item of items ?? []) {

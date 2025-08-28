@@ -10,6 +10,7 @@ import { Section } from "@colonydb/anthill/Section";
 import { Stack } from "@colonydb/anthill/Stack";
 import { type ReactNode, useEffect, useState } from "react";
 import useSWR from "swr/immutable";
+import { Temporal } from "temporal-polyfill";
 import type { ListConfig, ListResult } from ".";
 
 type Props = {
@@ -68,7 +69,20 @@ const List = ({
       headingLevel={2}
       spacing="00"
       title={
-        <Header actions={actions}>
+        <Header
+          actions={actions}
+          description={
+            data ? (
+              <PlainText font="small" color={["gray-s1", "gray-t1"]}>
+                Updated:{" "}
+                {Temporal.Instant.from(data?.fetchedAt).toLocaleString(undefined, {
+                  timeStyle: "long",
+                  dateStyle: "medium",
+                })}
+              </PlainText>
+            ) : null
+          }
+        >
           <Heading>
             <Link href={url}>{name}</Link>
           </Heading>

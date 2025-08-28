@@ -10,11 +10,12 @@ export type ListConfig = {
 };
 
 export type ListResult = {
-  items: Array<{ title: string; url: string | undefined }>;
   debug: {
     itemsFound: number;
     itemsAfterFilter: number;
     firstTitle: string | undefined;
     firstLink: string | undefined;
   };
+  fetchedAt: string;
+  items: Array<{ title: string; url: string | undefined }>;
 };
