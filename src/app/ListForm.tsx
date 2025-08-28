@@ -7,8 +7,8 @@ import { FormFooter } from "@colonydb/anthill/FormFooter";
 import { Header } from "@colonydb/anthill/Header";
 import { Heading } from "@colonydb/anthill/Heading";
 import { Icon } from "@colonydb/anthill/Icon";
+import { Inline } from "@colonydb/anthill/Inline";
 import { MultiColumnStack } from "@colonydb/anthill/MultiColumnStack";
-import { PlainText } from "@colonydb/anthill/PlainText";
 import { RegularField } from "@colonydb/anthill/RegularField";
 import { Section } from "@colonydb/anthill/Section";
 import { Specimen } from "@colonydb/anthill/Specimen";
@@ -133,9 +133,9 @@ const Preview = () => {
             url={data.url}
           />
         ) : (
-          <PlainText font="regular-italic" color={["gray-t1", "gray-s1"]}>
+          <Inline font="regular-italic" hue="gray">
             Not configured
-          </PlainText>
+          </Inline>
         )}
       </Specimen>
     </Section>

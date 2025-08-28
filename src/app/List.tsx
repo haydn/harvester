@@ -4,8 +4,8 @@ import { Badge } from "@colonydb/anthill/Badge";
 import { CodeBlock } from "@colonydb/anthill/CodeBlock";
 import { Header } from "@colonydb/anthill/Header";
 import { Heading } from "@colonydb/anthill/Heading";
+import { Inline } from "@colonydb/anthill/Inline";
 import { Link } from "@colonydb/anthill/Link";
-import { PlainText } from "@colonydb/anthill/PlainText";
 import { Section } from "@colonydb/anthill/Section";
 import { Stack } from "@colonydb/anthill/Stack";
 import { type ReactNode, useEffect, useState } from "react";
@@ -73,12 +73,12 @@ const List = ({
           actions={actions}
           description={
             data ? (
-              <PlainText font="tiny" color={["gray-s1", "gray-t1"]}>
+              <Inline font="tiny" hue="gray">
                 {Temporal.Instant.from(data?.fetchedAt).toLocaleString(undefined, {
                   dateStyle: "short",
                   timeStyle: "long",
                 })}
-              </PlainText>
+              </Inline>
             ) : null
           }
         >
@@ -96,9 +96,9 @@ const List = ({
         <p>Error: {error.message}</p>
       ) : data === undefined || data.items.length === 0 ? (
         <Stack>
-          <PlainText color={["gray-s1", "gray-t1"]} font="regular-italic">
+          <Inline font="regular-italic" hue="gray">
             No results
-          </PlainText>
+          </Inline>
           {debug && data?.debug ? (
             <CodeBlock language="json">{JSON.stringify(data.debug, null, 2)}</CodeBlock>
           ) : null}
@@ -120,14 +120,14 @@ const List = ({
                   {itemUrl ? <Link href={itemUrl}>{title}</Link> : title}
                 </div>
                 <div>
-                  <PlainText font="tiny" color={["gray-s1", "gray-t1"]}>
+                  <Inline font="tiny" hue="gray">
                     <Link href={url}>{name}</Link>
                     {" • "}
                     {Temporal.Instant.from(firstSeen).toLocaleString(undefined, {
                       dateStyle: "short",
                       timeStyle: "long",
                     })}
-                  </PlainText>
+                  </Inline>
                 </div>
               </li>
             );
