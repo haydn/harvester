@@ -1,11 +1,11 @@
 "use client";
 
+import { Badge } from "@colonydb/anthill/Badge";
 import { CodeBlock } from "@colonydb/anthill/CodeBlock";
 import { Header } from "@colonydb/anthill/Header";
 import { Heading } from "@colonydb/anthill/Heading";
 import { Link } from "@colonydb/anthill/Link";
 import { PlainText } from "@colonydb/anthill/PlainText";
-import { RichText } from "@colonydb/anthill/RichText";
 import { Section } from "@colonydb/anthill/Section";
 import { Stack } from "@colonydb/anthill/Stack";
 import { type ReactNode, useEffect, useState } from "react";
@@ -73,11 +73,10 @@ const List = ({
           actions={actions}
           description={
             data ? (
-              <PlainText font="small" color={["gray-s1", "gray-t1"]}>
-                Updated:{" "}
+              <PlainText font="tiny" color={["gray-s1", "gray-t1"]}>
                 {Temporal.Instant.from(data?.fetchedAt).toLocaleString(undefined, {
+                  dateStyle: "short",
                   timeStyle: "long",
-                  dateStyle: "medium",
                 })}
               </PlainText>
             ) : null
@@ -105,14 +104,35 @@ const List = ({
           ) : null}
         </Stack>
       ) : (
-        <RichText>
-          <ul>
-            {data.items.map(({ title, url }, index) => {
-              const key = `${title}:${url}:${index}`;
-              return <li key={key}>{url ? <a href={url}>{title}</a> : title}</li>;
-            })}
-          </ul>
-        </RichText>
+        <Stack tagName="ul">
+          {data.items.map(({ firstSeen, title, url: itemUrl }, index) => {
+            const key = `${title}:${itemUrl}:${index}`;
+            return (
+              <li key={key} style={{ breakInside: "avoid" }}>
+                <div>
+                  {Temporal.Now.instant()
+                    .since(Temporal.Instant.from(firstSeen))
+                    .round({ roundingMode: "trunc", smallestUnit: "days" }).days < 2 ? (
+                    <>
+                      <Badge hue="lime">New</Badge>{" "}
+                    </>
+                  ) : null}
+                  {itemUrl ? <Link href={itemUrl}>{title}</Link> : title}
+                </div>
+                <div>
+                  <PlainText font="tiny" color={["gray-s1", "gray-t1"]}>
+                    <Link href={url}>{name}</Link>
+                    {" • "}
+                    {Temporal.Instant.from(firstSeen).toLocaleString(undefined, {
+                      dateStyle: "short",
+                      timeStyle: "long",
+                    })}
+                  </PlainText>
+                </div>
+              </li>
+            );
+          })}
+        </Stack>
       )}
     </Section>
   );

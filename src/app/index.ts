@@ -17,5 +17,9 @@ export type ListResult = {
     firstLink: string | undefined;
   };
   fetchedAt: string;
-  items: Array<{ title: string; url: string | undefined }>;
+  items: Array<{
+    firstSeen: string;
+    title: string;
+    url: string | undefined;
+  }>;
 };

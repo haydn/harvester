@@ -1,8 +1,18 @@
 import { JSDOM, VirtualConsole } from "jsdom";
+import { after } from "next/server";
+import { createClient } from "redis";
 import { toTemporalInstant } from "temporal-polyfill";
 import type { ListResult } from "..";
 
 export const GET = async (request: Request) => {
+  const redis = process.env.REDIS_URL ? createClient({ url: process.env.REDIS_URL }) : null;
+
+  if (redis) await redis.connect();
+
+  after(() => {
+    if (redis) redis.destroy();
+  });
+
   const requestUrl = URL.parse(request.url);
 
   const include = requestUrl?.searchParams.get("include");
@@ -28,9 +38,11 @@ export const GET = async (request: Request) => {
 
   if (response.ok === false) throw Error("Failed to fetch URL");
 
-  const dateHeader = response.headers.get("date");
+  const sourceDateHeader = response.headers.get("date");
 
-  const instant = toTemporalInstant.apply(dateHeader ? new Date(dateHeader) : new Date(Date.now()));
+  const sourceUpdatedInstant = toTemporalInstant.apply(
+    sourceDateHeader ? new Date(sourceDateHeader) : new Date(Date.now()),
+  );
 
   const html = await response.text();
 
@@ -49,7 +61,7 @@ export const GET = async (request: Request) => {
       itemsAfterFilter: 0,
       itemsFound: items.length,
     },
-    fetchedAt: instant.toString(),
+    fetchedAt: sourceUpdatedInstant.toString(),
     items: [],
   };
 
@@ -88,7 +100,42 @@ export const GET = async (request: Request) => {
         result.debug.firstLink = parsedUrl;
       }
 
-      result.items.push({ title, url: parsedUrl });
+      result.items.push({
+        firstSeen: sourceUpdatedInstant.toString(),
+        title,
+        url: parsedUrl,
+      });
+    }
+  }
+
+  if (redis) {
+    const keys = result.items.map(
+      ({ title }) => `${url}:${itemSelector}:${titleSelector ?? ""}:${title.slice(0, 100)}`,
+    );
+
+    if (keys.length > 0) {
+      const firstSeenValues = await redis.HMGET("first_seen", keys);
+
+      for (let i = 0; i < firstSeenValues.length; i++) {
+        const value = firstSeenValues[i];
+        const item = result.items[i];
+
+        if (item && value) item.firstSeen = value;
+      }
+
+      await redis
+        .multi()
+        .HSET(
+          "first_seen",
+          Object.fromEntries(
+            keys.map((key, index) => [
+              key,
+              firstSeenValues[index] ?? sourceUpdatedInstant.toString(),
+            ]),
+          ),
+        )
+        .HEXPIRE("first_seen", keys, 60 * 60 * 24 * 28)
+        .exec();
     }
   }
 
