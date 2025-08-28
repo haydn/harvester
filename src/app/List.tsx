@@ -112,7 +112,8 @@ const List = ({
                 <div>
                   {Temporal.Now.instant()
                     .since(Temporal.Instant.from(firstSeen))
-                    .round({ roundingMode: "trunc", smallestUnit: "days" }).days < 2 ? (
+                    .round({ roundingMode: "trunc", smallestUnit: "hours" }).hours <
+                  (process.env.NODE_ENV === "development" ? 1 : 36) ? (
                     <>
                       <Badge hue="lime">New</Badge>{" "}
                     </>

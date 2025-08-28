@@ -32,7 +32,7 @@ export const GET = async (request: Request) => {
 
   const response = await fetch(url, {
     next: {
-      revalidate: 60 * 30,
+      revalidate: process.env.NODE_ENV === "development" ? 30 : 60 * 30,
     },
   });
 
@@ -141,7 +141,10 @@ export const GET = async (request: Request) => {
 
   return Response.json(result, {
     headers: {
-      "Cache-Control": "max-age=0, s-maxage=3600",
+      "Cache-Control":
+        process.env.NODE_ENV === "development"
+          ? "max-age=0, s-maxage=60"
+          : "max-age=0, s-maxage=3600",
     },
   });
 };
