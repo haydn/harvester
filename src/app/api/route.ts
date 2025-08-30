@@ -32,7 +32,7 @@ export const GET = async (request: Request) => {
 
   const response = await fetch(url, {
     next: {
-      revalidate: process.env.NODE_ENV === "development" ? 30 : 60 * 30,
+      revalidate: process.env.NODE_ENV === "development" ? 60 : 3600,
     },
   });
 
@@ -141,8 +141,7 @@ export const GET = async (request: Request) => {
 
   return Response.json(result, {
     headers: {
-      "Vercel-CDN-Cache-Control":
-        process.env.NODE_ENV === "development" ? "max-age=60" : "max-age=3600",
+      "Vercel-CDN-Cache-Control": "max-age=30",
     },
   });
 };
