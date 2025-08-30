@@ -141,10 +141,8 @@ export const GET = async (request: Request) => {
 
   return Response.json(result, {
     headers: {
-      "Cache-Control":
-        process.env.NODE_ENV === "development"
-          ? "public, max-age=0, s-maxage=60, must-revalidate"
-          : "public, max-age=0, s-maxage=3600, must-revalidate",
+      "Vercel-CDN-Cache-Control":
+        process.env.NODE_ENV === "development" ? "max-age=60" : "max-age=3600",
     },
   });
 };
