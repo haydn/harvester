@@ -143,8 +143,8 @@ export const GET = async (request: Request) => {
     headers: {
       "Cache-Control":
         process.env.NODE_ENV === "development"
-          ? "max-age=0, s-maxage=60"
-          : "max-age=0, s-maxage=3600",
+          ? "public, max-age=0, s-maxage=60, must-revalidate"
+          : "public, max-age=0, s-maxage=3600, must-revalidate",
     },
   });
 };
