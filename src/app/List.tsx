@@ -62,7 +62,10 @@ const List = ({
     };
   }, [exclude, include, itemSelector, titleSelector, url, linkSelector]);
 
-  const { data, error, isLoading, isValidating } = useSWR<ListResult, Error>(requestUrl, fetcher);
+  const { data, error, isLoading } = useSWR<ListResult, Error>(requestUrl, fetcher, {
+    keepPreviousData: true,
+    refreshInterval: 1000 * 60 * 5,
+  });
 
   return (
     <Section
@@ -88,9 +91,7 @@ const List = ({
         </Header>
       }
     >
-      {isValidating ? (
-        <p>Validating…</p>
-      ) : isLoading ? (
+      {isLoading ? (
         <p>Loading…</p>
       ) : error ? (
         <p>Error: {error.message}</p>
