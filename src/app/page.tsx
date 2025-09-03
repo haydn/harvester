@@ -121,12 +121,12 @@ const HomePage = () => {
                         <ActionSet
                           actions={[
                             {
-                              content: <RemoveSourceDialog source={source} remove={deleteSource} />,
-                              key: "remove",
-                            },
-                            {
                               content: <EditSourceDialog source={source} update={updateSource} />,
                               key: "edit",
+                            },
+                            {
+                              content: <RemoveSourceDialog source={source} remove={deleteSource} />,
+                              key: "remove",
                             },
                           ]}
                           color={["gray-s1", "gray-t1"]}
