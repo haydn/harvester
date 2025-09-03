@@ -7,9 +7,7 @@ import { MultiColumnStack } from "@colonydb/anthill/MultiColumnStack";
 import { Section } from "@colonydb/anthill/Section";
 import { Stack } from "@colonydb/anthill/Stack";
 import Image from "next/image";
-import { useCallback } from "react";
 import useSWR from "swr/immutable";
-import * as v from "valibot";
 import { AddSourceDialog } from "@/dialogs/AddSourceDialog";
 import { EditSourceDialog } from "@/dialogs/EditSourceDialog";
 import { RemoveSourceDialog } from "@/dialogs/RemoveSourceDialog";
@@ -23,60 +21,7 @@ const HomePage = () => {
     data: sources,
     error,
     isLoading,
-    mutate,
   } = useSWR<Array<SourceConfig>, Error>("lists", configFetcher);
-
-  const addSource = useCallback(
-    async (source: SourceConfig) =>
-      mutate(
-        async (current) => {
-          v.parse(
-            v.object({
-              exclude: v.optional(v.string()),
-              id: v.string(),
-              include: v.optional(v.string()),
-              itemSelector: v.pipe(v.string(), v.nonEmpty()),
-              linkSelector: v.optional(v.string()),
-              name: v.pipe(v.string(), v.nonEmpty()),
-              titleSelector: v.optional(v.string()),
-              url: v.pipe(v.string(), v.nonEmpty(), v.url()),
-            }),
-            source,
-          );
-          const value = current ? [...current, source] : [source];
-          localStorage.setItem("lists", JSON.stringify(value));
-          return value;
-        },
-        { revalidate: false },
-      ),
-    [mutate],
-  );
-
-  const updateSource = useCallback(
-    async (source: SourceConfig) =>
-      mutate(
-        async (current) => {
-          const value = current ? [...current.filter((x) => x.id !== source.id), source] : [source];
-          localStorage.setItem("lists", JSON.stringify(value));
-          return value;
-        },
-        { revalidate: false },
-      ),
-    [mutate],
-  );
-
-  const deleteSource = useCallback(
-    async (source: SourceConfig) =>
-      mutate(
-        async (current) => {
-          const value = current ? [...current.filter((x) => x.id !== source.id)] : [];
-          localStorage.setItem("lists", JSON.stringify(value));
-          return value;
-        },
-        { revalidate: false },
-      ),
-    [mutate],
-  );
 
   return (
     <Section
@@ -107,7 +52,7 @@ const HomePage = () => {
           >
             <Section
               title={
-                <Header actions={<AddSourceDialog add={addSource} />}>
+                <Header actions={<AddSourceDialog />}>
                   <Heading>Sources</Heading>
                 </Header>
               }
@@ -121,11 +66,11 @@ const HomePage = () => {
                         <ActionSet
                           actions={[
                             {
-                              content: <EditSourceDialog source={source} update={updateSource} />,
+                              content: <EditSourceDialog source={source} />,
                               key: "edit",
                             },
                             {
-                              content: <RemoveSourceDialog source={source} remove={deleteSource} />,
+                              content: <RemoveSourceDialog source={source} />,
                               key: "remove",
                             },
                           ]}

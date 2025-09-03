@@ -2,48 +2,48 @@
 
 import { Dialog } from "@colonydb/anthill/Dialog";
 import { Icon } from "@colonydb/anthill/Icon";
+import useSWRMutation from "swr/mutation";
 import { v4 as uuid } from "uuid";
 import { SourceForm } from "@/app/SourceForm";
-import type { SourceConfig } from "@/index";
+import { addSource } from "@/mutations/addSource";
 
-type Props = {
-  add: (source: SourceConfig) => Promise<unknown>;
-};
-
-export const AddSourceDialog = ({ add }: Props) => (
-  <Dialog
-    dismissible
-    icon={<Icon symbol="Add" />}
-    render={(closeDialog) => (
-      <SourceForm
-        id="newSource"
-        initialData={{
-          exclude: "",
-          id: uuid(),
-          include: "",
-          itemSelector: "",
-          linkSelector: "",
-          name: "",
-          titleSelector: "",
-          url: "",
-        }}
-        onCancel={() => {
-          closeDialog();
-        }}
-        onSubmit={async (source) => {
-          await add(source);
-        }}
-        onSuccess={() => {
-          setTimeout(() => {
+export const AddSourceDialog = () => {
+  const { trigger } = useSWRMutation("lists", addSource);
+  return (
+    <Dialog
+      dismissible
+      icon={<Icon symbol="Add" />}
+      render={(closeDialog) => (
+        <SourceForm
+          id="newSource"
+          initialData={{
+            exclude: "",
+            id: uuid(),
+            include: "",
+            itemSelector: "",
+            linkSelector: "",
+            name: "",
+            titleSelector: "",
+            url: "",
+          }}
+          onCancel={() => {
             closeDialog();
-          }, 1000);
-        }}
-        title="Add Source"
-      />
-    )}
-    color={["gray-s1", "gray-t1"]}
-    width="medium"
-  >
-    Add
-  </Dialog>
-);
+          }}
+          onSubmit={async (source) => {
+            await trigger(source);
+          }}
+          onSuccess={() => {
+            setTimeout(() => {
+              closeDialog();
+            }, 1000);
+          }}
+          title="Add Source"
+        />
+      )}
+      color={["gray-s1", "gray-t1"]}
+      width="medium"
+    >
+      Add
+    </Dialog>
+  );
+};
