@@ -15,36 +15,28 @@ import { MultiColumnStack } from "@colonydb/anthill/MultiColumnStack";
 import { RegularField } from "@colonydb/anthill/RegularField";
 import { Section } from "@colonydb/anthill/Section";
 import { Specimen } from "@colonydb/anthill/Specimen";
+import { Stack } from "@colonydb/anthill/Stack";
 import { StringInput } from "@colonydb/anthill/StringInput";
 import { TabSet } from "@colonydb/anthill/TabSet";
 import { useForm } from "@colonydb/anthill/useForm";
 import { useState } from "react";
 import * as v from "valibot";
-import type { ListConfig } from ".";
+import type { SourceConfig } from "@/index";
+import { sourceSchema } from "@/schemas/sourceSchema";
 import List from "./List";
+import Source from "./Source";
 
 type Props = {
   id: string;
-  list: ListConfig;
+  initialData: SourceConfig;
   onCancel: () => void;
-  onSubmit: (list: ListConfig) => void;
+  onSubmit: (list: SourceConfig) => void;
   onSuccess: () => void;
   title: string;
 };
 
-const schema = v.object({
-  exclude: v.optional(v.string()),
-  id: v.string(),
-  include: v.optional(v.string()),
-  itemSelector: v.pipe(v.string(), v.nonEmpty()),
-  linkSelector: v.optional(v.string()),
-  name: v.pipe(v.string(), v.nonEmpty()),
-  titleSelector: v.optional(v.string()),
-  url: v.pipe(v.string(), v.nonEmpty(), v.url()),
-});
-
-const ListForm = ({ id, list: initialList, onCancel, onSubmit, onSuccess, title }: Props) => {
-  const [tab, setTab] = useState<"basics" | "filters">("basics");
+export const SourceForm = ({ id, initialData, onCancel, onSubmit, onSuccess, title }: Props) => {
+  const [tab, setTab] = useState<"items" | "filters">("items");
   return (
     <Form
       action={async ({ data }) => {
@@ -56,8 +48,8 @@ const ListForm = ({ id, list: initialList, onCancel, onSubmit, onSuccess, title 
       }}
       onSuccess={onSuccess}
       id={id}
-      initialData={initialList}
-      schema={schema}
+      initialData={initialData}
+      schema={sourceSchema}
     >
       <Card
         header={
@@ -92,17 +84,30 @@ const ListForm = ({ id, list: initialList, onCancel, onSubmit, onSuccess, title 
         }
       >
         <CardContent>
-          <MultiColumnStack columns="30ch">
+          <div
+            style={{
+              gap: "2rlh",
+              display: "grid",
+              columnRule: "1px solid currentColor",
+              gridTemplateColumns: "minmax(0, 1fr) minmax(0, 1fr)",
+            }}
+          >
             <Section title={<Heading>Configuration</Heading>}>
+              <RegularField label="Name" name="name" required>
+                <StringInput name="name" placeholder="Reddit" />
+              </RegularField>
+              <RegularField label="Page URL" name="url" required>
+                <StringInput name="url" placeholder="https://www.reddit.com/" />
+              </RegularField>
               <TabSet
                 items={[
                   {
-                    key: "basics",
-                    label: "Basics",
+                    key: "items",
+                    label: "Items",
                     onClick: () => {
-                      setTab("basics");
+                      setTab("items");
                     },
-                    selected: tab === "basics",
+                    selected: tab === "items",
                   },
                   {
                     key: "filters",
@@ -114,21 +119,15 @@ const ListForm = ({ id, list: initialList, onCancel, onSubmit, onSuccess, title 
                   },
                 ]}
               />
-              {tab === "basics" ? (
+              {tab === "items" ? (
                 <>
-                  <RegularField label="Name" name="name" required>
-                    <StringInput name="name" placeholder="Reddit" />
-                  </RegularField>
-                  <RegularField label="Page URL" name="url" required>
-                    <StringInput name="url" placeholder="https://www.reddit.com/" />
-                  </RegularField>
                   <RegularField label="Item Selector" name="itemSelector" required>
                     <Block font="tiny">
                       CSS selector identifying the items on the page to be listed.
                     </Block>
                     <StringInput name="itemSelector" placeholder="article" />
                   </RegularField>
-                  <RegularField label="Item Title Selector" name="titleSelector">
+                  <RegularField label="Title Selector" name="titleSelector">
                     <Block font="tiny">
                       CSS selector applied to each item to identify its title. If not provided, the
                       text of the entire item will be used.
@@ -164,7 +163,7 @@ const ListForm = ({ id, list: initialList, onCancel, onSubmit, onSuccess, title 
               ) : null}
             </Section>
             <Preview />
-          </MultiColumnStack>
+          </div>
         </CardContent>
       </Card>
     </Form>
@@ -172,29 +171,52 @@ const ListForm = ({ id, list: initialList, onCancel, onSubmit, onSuccess, title 
 };
 
 const Preview = () => {
-  const { data } = useForm(schema);
+  const { data } = useForm(sourceSchema);
+  const [tab, setTab] = useState<"overview" | "items" | "raw">("overview");
   return (
     <Section title={<Heading>Preview</Heading>}>
-      <Specimen>
-        {v.is(schema, data) ? (
-          <List
-            debug
-            exclude={data.exclude}
-            include={data.include}
-            itemSelector={data.itemSelector}
-            linkSelector={data.linkSelector}
-            name={data.name}
-            titleSelector={data.titleSelector}
-            url={data.url}
-          />
-        ) : (
-          <Inline font="regular-italic" hue="gray">
-            Not configured
-          </Inline>
-        )}
-      </Specimen>
+      <TabSet
+        items={[
+          {
+            key: "overview",
+            label: "Overview",
+            onClick: () => {
+              setTab("overview");
+            },
+            selected: tab === "overview",
+          },
+          {
+            key: "items",
+            label: "Items",
+            onClick: () => {
+              setTab("items");
+            },
+            selected: tab === "items",
+          },
+          {
+            key: "raw",
+            label: "Raw Data",
+            onClick: () => {
+              setTab("raw");
+            },
+            selected: tab === "raw",
+          },
+        ]}
+      />
+      {v.is(sourceSchema, data) ? (
+        <>
+          <Specimen>
+            <Source config={data} />
+          </Specimen>
+          <Specimen>
+            <List sources={[data]} />
+          </Specimen>
+        </>
+      ) : (
+        <Inline font="regular-italic" hue="gray">
+          Not configured
+        </Inline>
+      )}
     </Section>
   );
 };
-
-export default ListForm;

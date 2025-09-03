@@ -2,7 +2,7 @@ import { JSDOM, VirtualConsole } from "jsdom";
 import { after } from "next/server";
 import { createClient } from "redis";
 import { toTemporalInstant } from "temporal-polyfill";
-import type { ListResult } from "..";
+import type { SourceResult } from "@/index";
 
 export const GET = async (request: Request) => {
   const redis = process.env.REDIS_URL ? createClient({ url: process.env.REDIS_URL }) : null;
@@ -54,7 +54,7 @@ export const GET = async (request: Request) => {
 
   const items = selectAll(dom.window.document, itemSelector);
 
-  const result: ListResult = {
+  const result: SourceResult = {
     debug: {
       firstLink: undefined,
       firstTitle: undefined,

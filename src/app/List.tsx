@@ -1,142 +1,84 @@
 "use client";
 
 import { Badge } from "@colonydb/anthill/Badge";
-import { CodeBlock } from "@colonydb/anthill/CodeBlock";
-import { Header } from "@colonydb/anthill/Header";
-import { Heading } from "@colonydb/anthill/Heading";
 import { Inline } from "@colonydb/anthill/Inline";
 import { Link } from "@colonydb/anthill/Link";
-import { Section } from "@colonydb/anthill/Section";
 import { Stack } from "@colonydb/anthill/Stack";
-import { type ReactNode, useEffect, useState } from "react";
-import useSWR from "swr/immutable";
+import { useMemo } from "react";
 import { Temporal } from "temporal-polyfill";
-import type { ListConfig, ListResult } from ".";
+import { sourceFetcher } from "@/fetchers/sourceFetcher";
+import { useLocation } from "@/hooks/useLocation";
+import { useSWRList } from "@/hooks/useSWRList";
+import { sourceUrlFromConfig } from "@/utils/sourceUrlFromConfig";
+import type { SourceConfig } from "..";
 
 type Props = {
-  actions?: ReactNode;
-  debug?: boolean;
-} & Omit<ListConfig, "id">;
+  sources: Array<SourceConfig>;
+};
 
-const fetcher = (url: string) =>
-  fetch(url).then((r) => {
-    if (!r.ok) {
-      throw Error(`Failed to fetch data: ${r.status} ${r.statusText}`);
-    }
-    return r.json();
-  });
+const List = ({ sources }: Props) => {
+  const location = useLocation();
 
-const List = ({
-  actions,
-  debug = false,
-  exclude,
-  include,
-  itemSelector,
-  linkSelector,
-  name,
-  titleSelector,
-  url,
-}: Props) => {
-  const [requestUrl, setRequestUrl] = useState<string | null>(null);
+  const sourceUrls = useMemo(
+    () => sources.map((source) => sourceUrlFromConfig(source, location)),
+    [location, sources],
+  );
 
-  useEffect(() => {
-    let timeoutId: NodeJS.Timeout;
+  const { data, isLoading } = useSWRList(sourceUrls, sourceFetcher);
 
-    if (window) {
-      const result = new URL("/api", window.location.href);
+  const items = data
+    .flatMap((result, resultIndex) =>
+      (result?.items ?? []).map((item, itemIndex) => ({
+        ...item,
+        key: `${item.title}:${item.url}:${resultIndex}:${itemIndex}`,
+        source: {
+          name: sources[resultIndex]?.name ?? "Unknown",
+          url: sources[resultIndex]?.url ?? "",
+        },
+      })),
+    )
+    .sort(
+      (a, b) =>
+        Temporal.Instant.compare(
+          Temporal.Instant.from(b.firstSeen),
+          Temporal.Instant.from(a.firstSeen),
+        ) || a.title.localeCompare(b.title),
+    );
 
-      if (exclude) result.searchParams.set("exclude", exclude);
-      if (include) result.searchParams.set("include", include);
-      result.searchParams.set("itemSelector", itemSelector);
-      if (linkSelector) result.searchParams.set("linkSelector", linkSelector);
-      if (titleSelector) result.searchParams.set("titleSelector", titleSelector);
-      result.searchParams.set("url", url);
-
-      timeoutId = setTimeout(() => {
-        setRequestUrl(result.href);
-      }, 500);
-    }
-
-    return () => {
-      if (timeoutId) clearTimeout(timeoutId);
-    };
-  }, [exclude, include, itemSelector, titleSelector, url, linkSelector]);
-
-  const { data, error, isLoading } = useSWR<ListResult, Error>(requestUrl, fetcher, {
-    keepPreviousData: true,
-    refreshInterval: 1000 * 60 * 5,
-  });
-
-  return (
-    <Section
-      headingLevel={2}
-      spacing="00"
-      title={
-        <Header
-          actions={actions}
-          description={
-            data ? (
-              <Inline font="tiny" hue="gray">
-                {Temporal.Instant.from(data?.fetchedAt).toLocaleString(undefined, {
-                  dateStyle: "short",
-                  timeStyle: "long",
-                })}
-              </Inline>
-            ) : null
-          }
-        >
-          <Heading>
-            <Link href={url}>{name}</Link>
-          </Heading>
-        </Header>
-      }
-    >
-      {isLoading ? (
-        <p>Loading…</p>
-      ) : error ? (
-        <p>Error: {error.message}</p>
-      ) : data === undefined || data.items.length === 0 ? (
-        <Stack>
-          <Inline font="regular-italic" hue="gray">
-            No results
-          </Inline>
-          {debug && data?.debug ? (
-            <CodeBlock language="json">{JSON.stringify(data.debug, null, 2)}</CodeBlock>
-          ) : null}
-        </Stack>
-      ) : (
-        <Stack tagName="ul">
-          {data.items.map(({ firstSeen, title, url: itemUrl }, index) => {
-            const key = `${title}:${itemUrl}:${index}`;
-            return (
-              <li key={key} style={{ breakInside: "avoid" }}>
-                <div>
-                  {Temporal.Now.instant()
-                    .since(Temporal.Instant.from(firstSeen))
-                    .round({ roundingMode: "trunc", smallestUnit: "hours" }).hours <
-                  (process.env.NODE_ENV === "development" ? 1 : 36) ? (
-                    <>
-                      <Badge hue="lime">New</Badge>{" "}
-                    </>
-                  ) : null}
-                  {itemUrl ? <Link href={itemUrl}>{title}</Link> : title}
-                </div>
-                <div>
-                  <Inline font="tiny" hue="gray">
-                    <Link href={url}>{name}</Link>
-                    {" • "}
-                    {Temporal.Instant.from(firstSeen).toLocaleString(undefined, {
-                      dateStyle: "short",
-                      timeStyle: "long",
-                    })}
-                  </Inline>
-                </div>
-              </li>
-            );
-          })}
-        </Stack>
-      )}
-    </Section>
+  return isLoading ? (
+    <p>Loading…</p>
+  ) : data.length === 0 ? (
+    <Inline font="regular-italic" hue="gray">
+      No results
+    </Inline>
+  ) : (
+    <Stack tagName="ul">
+      {items.map(({ key, source, ...item }) => (
+        <li key={key} style={{ breakInside: "avoid" }}>
+          <div>
+            {Temporal.Now.instant()
+              .since(Temporal.Instant.from(item.firstSeen))
+              .round({ roundingMode: "trunc", smallestUnit: "hours" }).hours <
+            (process.env.NODE_ENV === "development" ? 1 : 36) ? (
+              <>
+                <Badge hue="lime">New</Badge>{" "}
+              </>
+            ) : null}
+            {item.url ? <Link href={item.url}>{item.title}</Link> : item.title}
+          </div>
+          <div>
+            <Inline font="tiny" hue="gray">
+              <Link href={source.url}>{source.name}</Link>
+              {" • "}
+              {Temporal.Instant.from(item.firstSeen).toLocaleString(undefined, {
+                dateStyle: "short",
+                timeStyle: "long",
+              })}
+            </Inline>
+          </div>
+        </li>
+      ))}
+    </Stack>
   );
 };
 
