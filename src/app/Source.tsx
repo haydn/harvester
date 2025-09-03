@@ -50,7 +50,8 @@ const Source = ({ actions, config }: Props) => {
           <Badge hue="lime">New</Badge>{" "}
         </>
       ) : null}
-      <Link href={config.url}>{config.name}</Link>
+      <Link href={config.url}>{config.name}</Link>{" "}
+      <Inline hue="gray">({data?.items.length ?? 0})</Inline>
       {error ? (
         <>
           {" "}
