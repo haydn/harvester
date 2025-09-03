@@ -23,7 +23,7 @@ const Source = ({ actions, config }: Props) => {
 
   const sourceUrl = useMemo(() => sourceUrlFromConfig(config, location), [config, location]);
 
-  const { data, error } = useSWR<SourceResult, Error>(sourceUrl, sourceFetcher);
+  const { data, error, isLoading } = useSWR<SourceResult, Error>(sourceUrl, sourceFetcher);
 
   return (
     <Header
@@ -51,7 +51,9 @@ const Source = ({ actions, config }: Props) => {
         </>
       ) : null}
       <Link href={config.url}>{config.name}</Link>{" "}
-      <Inline hue="gray">({data?.items.length ?? 0})</Inline>
+      <Inline hue="gray">
+        {isLoading ? <Icon symbol="Processing" /> : `(${data?.items.length ?? 0})`}
+      </Inline>
       {error ? (
         <>
           {" "}
