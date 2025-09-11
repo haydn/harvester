@@ -141,7 +141,7 @@ export const GET = async (request: Request) => {
 
   return Response.json(result, {
     headers: {
-      "Vercel-CDN-Cache-Control": "max-age=30",
+      "Vercel-CDN-Cache-Control": "max-age=10",
     },
   });
 };
