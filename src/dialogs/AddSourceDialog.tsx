@@ -40,7 +40,7 @@ export const AddSourceDialog = () => {
           title="Add Source"
         />
       )}
-      color={["gray-s1", "gray-t1"]}
+      hue="gray"
       width="medium"
     >
       Add

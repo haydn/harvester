@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@colonydb/anthill':
-        specifier: 0.2.0-29
-        version: 0.2.0-29(@types/react@19.1.9)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(valibot@1.1.0(typescript@5.9.2))
+        specifier: 0.2.0-33
+        version: 0.2.0-33(@types/react@19.1.9)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(valibot@1.1.0(typescript@5.9.2))
       '@vercel/analytics':
         specifier: ^1.5.0
         version: 1.5.0(next@15.2.1(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(react@19.1.1)
@@ -122,8 +122,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@colonydb/anthill@0.2.0-29':
-    resolution: {integrity: sha512-JjimuOiYPIM7hOXq/8a44qTb7e4o5AYT/bjZNPYc9hn5ieJ/g2iiEnUmWfMAzx0Thh1RISikZCQRyHOzPulcVA==}
+  '@colonydb/anthill@0.2.0-33':
+    resolution: {integrity: sha512-9OW3Px5Hbk1QZKnYcTyMp3vUGuKNOsXiqBBrRNpHZfFheoYOH5slPjxr5rVyaxGL9B67zO9TXCoqTeacw6aLZQ==}
     peerDependencies:
       react: ^19.0.0
       react-dom: ^19.0.0
@@ -512,8 +512,8 @@ packages:
   decode-named-character-reference@1.2.0:
     resolution: {integrity: sha512-c6fcElNV6ShtZXmsgNgFFV5tVX2PaV4g+MOAkb8eXHvn6sryJBrZa9r0zV6+dtTyoCKxtDy5tyQ5ZwQuidtd+Q==}
 
-  dedent@1.6.0:
-    resolution: {integrity: sha512-F1Z+5UCFpmQUzJa11agbyPVMbpgT/qA3/SKyJ1jyBgm7dUcUEa8v9JwDkerSQXfakBwFljIxhOJqGkjUwZ9FSA==}
+  dedent@1.7.0:
+    resolution: {integrity: sha512-HGFtf8yhuhGhqO07SV79tRp+br4MnbdjeVxotpn1QBl30pcLLCQjX5b2295ll0fv8RKDKsmWYrl05usHM9CewQ==}
     peerDependencies:
       babel-plugin-macros: ^3.1.0
     peerDependenciesMeta:
@@ -1011,11 +1011,11 @@ snapshots:
   '@biomejs/cli-win32-x64@2.1.4':
     optional: true
 
-  '@colonydb/anthill@0.2.0-29(@types/react@19.1.9)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(valibot@1.1.0(typescript@5.9.2))':
+  '@colonydb/anthill@0.2.0-33(@types/react@19.1.9)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(valibot@1.1.0(typescript@5.9.2))':
     dependencies:
       '@haydn/universal': 0.0.4
       clsx: 2.1.1
-      dedent: 1.6.0
+      dedent: 1.7.0
       hast-util-to-jsx-runtime: 2.3.6
       react: 19.1.1
       react-dom: 19.1.1(react@19.1.1)
@@ -1306,7 +1306,7 @@ snapshots:
     dependencies:
       character-entities: 2.0.2
 
-  dedent@1.6.0: {}
+  dedent@1.7.0: {}
 
   dequal@2.0.3: {}
 

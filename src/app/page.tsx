@@ -33,8 +33,8 @@ const HomePage = () => {
           style={{
             gap: "2rlh",
             display: "grid",
-            columnRule: "1px solid currentColor",
-            gridTemplateColumns: "minmax(0, 10rlh) minmax(0, 1fr)",
+            columnRule: "var(--context-border)",
+            gridTemplateColumns: "minmax(min-content, 10rlh) minmax(min-content, 1fr)",
           }}
         >
           <Section
@@ -48,34 +48,33 @@ const HomePage = () => {
               {(sources ?? [])
                 .sort((a, b) => a.name.localeCompare(b.name))
                 .map((source) => (
-                  <Source
-                    actions={
-                      <ActionSet
-                        actions={[
-                          {
-                            content: <EditSourceDialog source={source} />,
-                            key: "edit",
-                          },
-                          {
-                            content: <RemoveSourceDialog source={source} />,
-                            key: "remove",
-                          },
-                        ]}
-                        color={["gray-s1", "gray-t1"]}
-                        title="Edit"
-                      />
-                    }
-                    config={source}
-                    key={source.id}
-                  />
+                  <li key={source.id}>
+                    <Source
+                      actions={
+                        <ActionSet
+                          actions={[
+                            {
+                              content: <EditSourceDialog source={source} />,
+                              key: "edit",
+                            },
+                            {
+                              content: <RemoveSourceDialog source={source} />,
+                              key: "remove",
+                            },
+                          ]}
+                          hue="gray"
+                          title="Edit"
+                        />
+                      }
+                      config={source}
+                    />
+                  </li>
                 ))}
             </Stack>
           </Section>
-          <Section title={<Heading>Items</Heading>}>
-            <MultiColumnStack allowBreaks columns="30ch">
-              <List sources={sources ?? []} />
-            </MultiColumnStack>
-          </Section>
+          <MultiColumnStack allowBreaks columns="30ch">
+            <List sources={sources ?? []} />
+          </MultiColumnStack>
         </div>
       )}
     </div>
