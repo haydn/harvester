@@ -1,6 +1,6 @@
 import * as v from "valibot";
 
-export const sourceSchema = v.object({
+export const sourceConfigSchema = v.object({
   exclude: v.optional(v.string()),
   id: v.string(),
   include: v.optional(v.string()),

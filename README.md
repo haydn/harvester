@@ -1,41 +1,8 @@
 # Harvester
 
-Use CSS selectors to grab lists of stuff from various websites and list them altogether on a single
-page.
+Aggregate data scrapped from web pages.
 
 ## API
-
-Request:
-
-```
-GET https://harvestor.particlesystem.com/api?url=https://example.com&itemSelector=.item
-```
-
-> [!NOTE]
-> For readability the params in the example above have not been correctly encoded.
-
-Response:
-
-```json
-{
-  "items": [
-    {
-      "title": "Item 1",
-      "link": "https://example.com/item1"
-    },
-    {
-      "title": "Item 2",
-      "link": "https://example.com/item2"
-    }
-  ],
-  "debug": {
-    "itemsFound": 2,
-    "itemsAfterFilter": 2,
-    "firstTitle": "Item 1",
-    "firstLink": "https://example.com/item1"
-  }
-}
-```
 
 ### Params
 
@@ -46,6 +13,7 @@ Required:
 
 Optional:
 
+- `debug` — A boolean indicating whether to include debug information in the response.
 - `exclude` — A comma-separated list of words an item's text content must contain to be excluded in
   the result.
 - `include` — A comma-separated list of words an item's text content must contain to be included in
@@ -54,3 +22,78 @@ Optional:
   attribute to be used as a link. If the item itself is an `<a>` element, this param can be omitted.
 - `titleSelector` — A CSS selector used to identify an element containing the title of an item. If
   omitted, the title will be all the text content of the item.
+
+### Examples
+
+> [!NOTE]
+> For readability the params in the following examples have not been correctly encoded.
+
+#### Basic
+
+Request:
+
+```
+GET https://harvestor.particlesystem.com/source?url=https://example.com&itemSelector=.item
+```
+
+Response:
+
+```json
+{
+  "fetchedAt": "2025-09-14T04:00:04Z",
+  "items": [
+    {
+      "firstSeen": "2025-09-13T01:23:21Z",
+      "title": "Item 1",
+      "url": "https://example.com/item1"
+    },
+    {
+      "firstSeen": "2025-09-12T03:34:08Z",
+      "title": "Item 2",
+      "url": "https://example.com/item2"
+    }
+  ],
+  "ok": true
+}
+```
+
+#### Debug Info
+
+Request:
+
+```
+GET https://harvestor.particlesystem.com/source?url=https://example.com&itemSelector=.item&debug=true
+```
+
+> [!NOTE]
+> For readability the params in the example above have not been correctly encoded.
+
+Response:
+
+```json
+{
+  "debug": {
+    "htmlSamples": [
+      "<div class=\"item\"><a href=\"https://example.com/item1\">Item 1</a></div>",
+      "<div class=\"item\"><a href=\"https://example.com/item2\">Item 2</a></div>"
+    ],
+    "itemsMatched": 2,
+    "itemsRemovedByExcludeFilter": 3,
+    "itemsRemovedByIncludeFilter": 1
+  },
+  "fetchedAt": "2025-09-14T04:00:04Z",
+  "items": [
+    {
+      "firstSeen": "2025-09-13T01:23:21Z",
+      "title": "Item 1",
+      "url": "https://example.com/item1"
+    },
+    {
+      "firstSeen": "2025-09-12T03:34:08Z",
+      "title": "Item 2",
+      "url": "https://example.com/item2"
+    }
+  ],
+  "ok": true
+}
+```

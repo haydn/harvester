@@ -1,13 +1,12 @@
 "use client";
 
-import { Action } from "@colonydb/anthill/Action";
 import { Button } from "@colonydb/anthill/Button";
 import { Card } from "@colonydb/anthill/Card";
 import { CardContent } from "@colonydb/anthill/CardContent";
 import { Dialog } from "@colonydb/anthill/Dialog";
+import { DialogHeader } from "@colonydb/anthill/DialogHeader";
 import { Form } from "@colonydb/anthill/Form";
 import { FormFooter } from "@colonydb/anthill/FormFooter";
-import { Header } from "@colonydb/anthill/Header";
 import { Heading } from "@colonydb/anthill/Heading";
 import { Icon } from "@colonydb/anthill/Icon";
 import useSWRMutation from "swr/mutation";
@@ -44,20 +43,9 @@ export const RemoveSourceDialog = ({ source }: Props) => {
         >
           <Card
             header={
-              <Header
-                actions={
-                  <Action
-                    fontSize="subheading"
-                    icon={<Icon symbol="Remove" />}
-                    onClick={() => {
-                      closeDialog();
-                    }}
-                    title="close"
-                  />
-                }
-              >
+              <DialogHeader close={closeDialog}>
                 <Heading>Remove Source</Heading>
-              </Header>
+              </DialogHeader>
             }
             footer={
               <FormFooter
@@ -79,7 +67,7 @@ export const RemoveSourceDialog = ({ source }: Props) => {
           </Card>
         </Form>
       )}
-      width="narrow"
+      width="small"
     >
       Remove
     </Dialog>

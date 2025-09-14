@@ -10,17 +10,17 @@ import useSWR from "swr/immutable";
 import { AddSourceDialog } from "@/dialogs/AddSourceDialog";
 import { EditSourceDialog } from "@/dialogs/EditSourceDialog";
 import { RemoveSourceDialog } from "@/dialogs/RemoveSourceDialog";
-import { configFetcher } from "@/fetchers/configFetcher";
+import { listFetcher } from "@/fetchers/listFetcher";
 import type { SourceConfig } from "@/index";
-import List from "./List";
-import Source from "./Source";
+import SourceItems from "./SourceItems";
+import SourceOverview from "./SourceOverview";
 
 const HomePage = () => {
   const {
     data: sources,
     error,
     isLoading,
-  } = useSWR<Array<SourceConfig>, Error>("lists", configFetcher);
+  } = useSWR<Array<SourceConfig>, Error>("lists", listFetcher);
 
   return (
     <div style={{ padding: "0 1rlh 1rlh" }}>
@@ -49,7 +49,7 @@ const HomePage = () => {
                 .sort((a, b) => a.name.localeCompare(b.name))
                 .map((source) => (
                   <li key={source.id}>
-                    <Source
+                    <SourceOverview
                       actions={
                         <ActionSet
                           actions={[
@@ -73,7 +73,7 @@ const HomePage = () => {
             </Stack>
           </Section>
           <MultiColumnStack allowBreaks columns="30ch">
-            <List sources={sources ?? []} />
+            <SourceItems sources={sources ?? []} />
           </MultiColumnStack>
         </div>
       )}

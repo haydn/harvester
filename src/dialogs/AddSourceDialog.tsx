@@ -41,7 +41,7 @@ export const AddSourceDialog = () => {
         />
       )}
       hue="gray"
-      width="medium"
+      width="large"
     >
       Add
     </Dialog>

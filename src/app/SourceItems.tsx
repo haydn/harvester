@@ -1,6 +1,7 @@
 "use client";
 
 import { Badge } from "@colonydb/anthill/Badge";
+import { Icon } from "@colonydb/anthill/Icon";
 import { Inline } from "@colonydb/anthill/Inline";
 import { Link } from "@colonydb/anthill/Link";
 import { Stack } from "@colonydb/anthill/Stack";
@@ -13,18 +14,21 @@ import { sourceUrlFromConfig } from "@/utils/sourceUrlFromConfig";
 import type { SourceConfig } from "..";
 
 type Props = {
+  debug?: boolean;
   sources: Array<SourceConfig>;
 };
 
-const List = ({ sources }: Props) => {
+const SourceItems = ({ debug = false, sources }: Props) => {
   const location = useLocation();
 
   const sourceUrls = useMemo(
-    () => sources.map((source) => sourceUrlFromConfig(source, location)),
-    [location, sources],
+    () => sources.map((source) => sourceUrlFromConfig(source, location, debug)),
+    [debug, location, sources],
   );
 
-  const { data, isLoading } = useSWRList(sourceUrls, sourceFetcher);
+  const { data, error, isLoading } = useSWRList(sourceUrls, sourceFetcher, {
+    shouldRetryOnError: false,
+  });
 
   const items = data
     .flatMap((result, resultIndex) =>
@@ -47,10 +51,19 @@ const List = ({ sources }: Props) => {
 
   return isLoading ? (
     <p>Loading…</p>
-  ) : data.length === 0 ? (
-    <Inline font="regular-italic" hue="gray">
-      No results
-    </Inline>
+  ) : items.length === 0 ? (
+    error ? (
+      <Inline>
+        <Badge hue="red">
+          <Icon symbol="Warning" />
+        </Badge>{" "}
+        {error.errors?.join(", ") ?? error.message}
+      </Inline>
+    ) : (
+      <Inline font="regular-italic" hue="gray">
+        No results
+      </Inline>
+    )
   ) : (
     <Stack tagName="ul">
       {items.map(({ key, source, ...item }) => (
@@ -82,4 +95,4 @@ const List = ({ sources }: Props) => {
   );
 };
 
-export default List;
+export default SourceItems;

@@ -5,25 +5,19 @@ import { Header } from "@colonydb/anthill/Header";
 import { Icon } from "@colonydb/anthill/Icon";
 import { Inline } from "@colonydb/anthill/Inline";
 import { Link } from "@colonydb/anthill/Link";
-import { type ReactNode, useMemo } from "react";
-import useSWR from "swr/immutable";
+import type { ReactNode } from "react";
 import { Temporal } from "temporal-polyfill";
-import { sourceFetcher } from "@/fetchers/sourceFetcher";
-import { useLocation } from "@/hooks/useLocation";
-import type { SourceConfig, SourceResult } from "@/index";
-import { sourceUrlFromConfig } from "@/utils/sourceUrlFromConfig";
+import { useSource } from "@/hooks/useSource";
+import type { SourceConfig } from "@/index";
 
 type Props = {
   actions?: ReactNode;
   config: SourceConfig;
+  debug?: boolean;
 };
 
-const Source = ({ actions, config }: Props) => {
-  const location = useLocation();
-
-  const sourceUrl = useMemo(() => sourceUrlFromConfig(config, location), [config, location]);
-
-  const { data, error, isLoading } = useSWR<SourceResult, Error>(sourceUrl, sourceFetcher);
+const SourceOverview = ({ actions, config, debug = false }: Props) => {
+  const { data, error, isLoading } = useSource(config, debug);
 
   return (
     <Header
@@ -66,4 +60,4 @@ const Source = ({ actions, config }: Props) => {
   );
 };
 
-export default Source;
+export default SourceOverview;
