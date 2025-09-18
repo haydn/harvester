@@ -1,6 +1,6 @@
 # Harvester
 
-Aggregate data scrapped from web pages.
+Aggregate data scrapped from the web.
 
 ## API
 

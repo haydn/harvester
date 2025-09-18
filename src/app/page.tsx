@@ -7,13 +7,14 @@ import { MultiColumnStack } from "@colonydb/anthill/MultiColumnStack";
 import { Section } from "@colonydb/anthill/Section";
 import { Stack } from "@colonydb/anthill/Stack";
 import useSWR from "swr/immutable";
+import SourceItems from "@/components/SourceItems";
+import SourceOverview from "@/components/SourceOverview";
 import { AddSourceDialog } from "@/dialogs/AddSourceDialog";
 import { EditSourceDialog } from "@/dialogs/EditSourceDialog";
 import { RemoveSourceDialog } from "@/dialogs/RemoveSourceDialog";
 import { listFetcher } from "@/fetchers/listFetcher";
 import type { SourceConfig } from "@/index";
-import SourceItems from "./SourceItems";
-import SourceOverview from "./SourceOverview";
+import styles from "./page.module.css";
 
 const HomePage = () => {
   const {
@@ -23,20 +24,13 @@ const HomePage = () => {
   } = useSWR<Array<SourceConfig>, Error>("lists", listFetcher);
 
   return (
-    <div style={{ padding: "0 1rlh 1rlh" }}>
+    <div className={styles.container}>
       {isLoading ? (
         "Loading…"
       ) : error ? (
         error.message
       ) : (
-        <div
-          style={{
-            gap: "2rlh",
-            display: "grid",
-            columnRule: "var(--context-border)",
-            gridTemplateColumns: "minmax(min-content, 10rlh) minmax(min-content, 1fr)",
-          }}
-        >
+        <div className={styles.content}>
           <Section
             title={
               <Header actions={<AddSourceDialog />}>
@@ -74,7 +68,9 @@ const HomePage = () => {
             </Stack>
           </Section>
           <MultiColumnStack allowBreaks columns="30ch">
-            <SourceItems sources={sources ?? []} />
+            <Section title={<Heading>Items</Heading>}>
+              <SourceItems sources={sources ?? []} />
+            </Section>
           </MultiColumnStack>
         </div>
       )}

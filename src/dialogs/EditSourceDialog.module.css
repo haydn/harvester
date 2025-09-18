@@ -1,0 +1,16 @@
+.container {
+  container-type: inline-size;
+
+  .content {
+    column-rule: var(--context-border);
+    display: grid;
+    gap: calc(var(--context-spacing) * 2);
+    grid-template-columns: var(--width-small) 1fr;
+  }
+}
+
+@container (width < 960px) {
+  .container .content {
+    grid-template-columns: auto;
+  }
+}

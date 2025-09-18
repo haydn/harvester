@@ -21,19 +21,7 @@ const SourceOverview = ({ actions, autoRefresh = false, config, debug = false }:
   const { data, error, isLoading } = useSource(config, debug, autoRefresh);
 
   return (
-    <Header
-      actions={actions}
-      description={
-        data ? (
-          <Inline font="tiny" hue="gray">
-            {Temporal.Instant.from(data?.fetchedAt).toLocaleString(undefined, {
-              dateStyle: "short",
-              timeStyle: "long",
-            })}
-          </Inline>
-        ) : null
-      }
-    >
+    <Header actions={actions}>
       {data?.items.some(
         ({ firstSeen }) =>
           Temporal.Now.instant()

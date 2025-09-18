@@ -1,0 +1,17 @@
+.container {
+  container-type: inline-size;
+  padding: 0 1rlh 1rlh;
+
+  .content {
+    column-rule: var(--context-border);
+    display: grid;
+    gap: 2rlh;
+    grid-template-columns: minmax(min-content, 10rlh) minmax(min-content, 1fr);
+  }
+}
+
+@container (width < 600px) {
+  .container .content {
+    grid-template-columns: auto;
+  }
+}
