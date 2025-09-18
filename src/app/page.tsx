@@ -66,6 +66,7 @@ const HomePage = () => {
                           title="Edit"
                         />
                       }
+                      autoRefresh
                       config={source}
                     />
                   </li>

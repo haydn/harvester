@@ -12,12 +12,13 @@ import type { SourceConfig } from "@/index";
 
 type Props = {
   actions?: ReactNode;
+  autoRefresh?: boolean;
   config: SourceConfig;
   debug?: boolean;
 };
 
-const SourceOverview = ({ actions, config, debug = false }: Props) => {
-  const { data, error, isLoading } = useSource(config, debug);
+const SourceOverview = ({ actions, autoRefresh = false, config, debug = false }: Props) => {
+  const { data, error, isLoading } = useSource(config, debug, autoRefresh);
 
   return (
     <Header
