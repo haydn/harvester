@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@colonydb/anthill':
-        specifier: 0.2.0-36
-        version: 0.2.0-36(@types/react@19.1.9)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(valibot@1.1.0(typescript@5.9.2))
+        specifier: 0.2.0-37
+        version: 0.2.0-37(@types/react@19.1.9)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(valibot@1.1.0(typescript@5.9.2))
       '@vercel/analytics':
         specifier: ^1.5.0
         version: 1.5.0(next@15.2.1(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(react@19.1.1)
@@ -125,8 +125,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@colonydb/anthill@0.2.0-36':
-    resolution: {integrity: sha512-7+q1rMBQXssy7nag5PNnzI9LdiV4dgo1u2cxkwx4U9LrRGeFp0OExbfbkfeGN2R9XO7/lWBwjk0hg+dJpexc9g==}
+  '@colonydb/anthill@0.2.0-37':
+    resolution: {integrity: sha512-FaKf06r5e71flG35FFijGftO+5MePe9lYjKJYZuWIZC/rveGvDry3wXxUBTP93/EegHyt0zfbKMHuZLHgudsow==}
     peerDependencies:
       react: ^19.0.0
       react-dom: ^19.0.0
@@ -1026,7 +1026,7 @@ snapshots:
   '@biomejs/cli-win32-x64@2.1.4':
     optional: true
 
-  '@colonydb/anthill@0.2.0-36(@types/react@19.1.9)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(valibot@1.1.0(typescript@5.9.2))':
+  '@colonydb/anthill@0.2.0-37(@types/react@19.1.9)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(valibot@1.1.0(typescript@5.9.2))':
     dependencies:
       '@haydn/universal': 0.0.4
       clsx: 2.1.1
