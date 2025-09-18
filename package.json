@@ -24,7 +24,9 @@
   "name": "harvester",
   "private": true,
   "scripts": {
+    "activate": "docker compose --progress quiet up --detach",
     "build": "next build",
+    "deactivate": "docker compose --progress quiet down --volumes",
     "dev": "next dev --turbopack",
     "fix": "biome check --fix",
     "health-check": "pnpm dlx knip --files --dependencies",
